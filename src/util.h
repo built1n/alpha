@@ -1,2 +1,5 @@
 #include <alpha.h>
-void getArg(alpha_ctx*);
+void exec_opcode(alpha_ctx*, byte);
+void badRead(alpha_ctx*);
+void badWrite(alpha_ctx*);
+void badInstr(alpha_ctx*);
