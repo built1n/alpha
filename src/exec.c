@@ -7,9 +7,9 @@ static inline word getArg(alpha_ctx* ctx)
     {
       register word ret;
       register word pc = ctx->regs[3];
-      ret=(ctx->memory[pc+1]>>24);
-      ret|=(ctx->memory[pc+2]>>16);
-      ret|=(ctx->memory[pc+3]>>8);
+      ret=(ctx->memory[pc+1]<<24);
+      ret|=(ctx->memory[pc+2]<<16);
+      ret|=(ctx->memory[pc+3]<<8);
       ret|=(ctx->memory[pc+4]);
       return ret;
     }
@@ -19,7 +19,7 @@ static inline word getArg(alpha_ctx* ctx)
 }
 static inline void writeWord(alpha_ctx* ctx, word addr, word value)
 {
-  if(addr<ctx->memsize-4)
+  if(addr<ctx->memsize-3)
     {
       ctx->memory[addr]=((value&0xFF000000) >> 24);
       ctx->memory[addr+1]=((value&0x00FF0000) >> 16);
@@ -31,7 +31,7 @@ static inline void writeWord(alpha_ctx* ctx, word addr, word value)
 }
 static inline word readWord(alpha_ctx* ctx, word addr)
 {
-  if(addr<ctx->memsize-4)
+  if(addr<ctx->memsize-3)
     {
       word ret=ctx->memory[addr+3];
       ret|=((ctx->memory[addr+2])<<8);
