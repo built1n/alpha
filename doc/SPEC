@@ -39,3 +39,4 @@ Instruction set:
 0b11 00 11 AA: Jump and pop address on top of stack (return)
 0b11 01 00 00: Halt execution, return R0 to the OS
 0b11 01 01 AA: Decrement R0, jump to AA if R0!=0 (Z80 DJNZ)
+0b11 01 10 AA: Print null-terminated string at AA [unimplemented]
