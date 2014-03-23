@@ -60,3 +60,13 @@ void alpha_exec(alpha_ctx* ctx)
   else
     ctx->done=true;
 }
+void alpha_disasm(alpha_ctx* ctx)
+{
+  if(!ctx->done && ctx->regs[3]<ctx->memsize)
+    {
+      disasm_opcode(ctx, readByte(ctx, ctx->regs[3]));
+      ++(ctx->regs[3]);
+    }
+  else
+    ctx->done=true;
+}
