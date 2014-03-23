@@ -38,8 +38,10 @@ typedef struct alpha_ctx {
 extern "C" {
 #endif
 
-alpha_ctx* alpha_init(byte* memory, word memsize, word maxstacksize, word sp);
-void alpha_exec(alpha_ctx*);
+  alpha_ctx* alpha_init(byte* memory, word memsize, word maxstacksize, word sp);
+  void alpha_exec(alpha_ctx*);
+  void alpha_print_state(alpha_ctx*);
+
 #define ALPHA_OUT_OF_BOUNDS 0xFF
 #define ALPHA_BAD_INSTR 0xFF00
 

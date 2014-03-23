@@ -24,8 +24,43 @@
 #include <vector>
 #include <cctype>
 #include <cstdio>
+#include <csignal>
 using namespace std;
 char hex_chars[]={'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'};
+alpha_ctx* ctx;
+
+void run()
+{
+  while(!ctx->done)
+    alpha_exec(ctx);
+}
+void ctrlc(int signum)
+{
+  alpha_print_state(ctx);
+  cout << "1. Continue" << endl;
+  cout << "2. Abort" << endl;
+  cout << "3. Debug" << endl;
+  bool good=false;
+  signal(SIGINT, SIG_DFL);
+  while(!good)
+    {
+      string str;
+      cout << "?";
+      cin >> str;
+      if(str.length()==0)
+	exit(1);
+      if(str[0]=='2' or str=="exit" or str=="quit")
+	exit(1);
+      if(str[0]=='1')
+	{
+	  signal(SIGINT, &ctrlc);
+	  run();
+	}
+      if(str[0]=='3')
+	exit(128);
+    }
+  exit(1);
+}  
 int main(int argc, char* argv[])
 {
   istream* in=&cin;
@@ -51,7 +86,7 @@ int main(int argc, char* argv[])
       if(interactive)
 	printf("0x%08X:", (unsigned int)prog.size()); // really shouldn't mix C-style and stream I/O!
       string line;
-      getline(*in, line);
+      getline(*in, line); // get line to comment
       for(unsigned int i=0;i<line.length();i+=2)
 	{
 	  byte val=0xFF; 
@@ -75,10 +110,13 @@ int main(int argc, char* argv[])
   byte* p=(byte*)malloc(prog.size()+2048);
   for(unsigned int i=0;i<prog.size();++i)
     p[i]=prog[i];
-  alpha_ctx* ctx=alpha_init((byte*)p, prog.size()+2048,2048,prog.size());
+  signal(SIGINT, &ctrlc);
+  ctx=alpha_init((byte*)p, // memory
+		 prog.size()+2048, // mem size
+		 2048, // stack size
+		 prog.size()); // initial stack pointer
   if(interactive)
-    cout << "Beginning execution..." << endl;
-  while(!ctx->done)
-    alpha_exec(ctx);
+    cout << endl << "Beginning execution..." << endl;
+  run();
   return ctx->return_value;
 }

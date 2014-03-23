@@ -42,6 +42,14 @@ alpha_ctx* alpha_init(byte* mem, word sz, word stackSz, word sp)
   ctx->return_value=EXIT_SUCCESS;
   return ctx;
 }
+void alpha_print_state(alpha_ctx* ctx)
+{
+  printf("====Status====\n");
+  printf("R0: 0x%08X\n", ctx->regs[0]);
+  printf("R1: 0x%08X\n", ctx->regs[1]);
+  printf("R2: 0x%08X\n", ctx->regs[2]);
+  printf("R3: 0x%08X\n", ctx->regs[3]);
+}
 void alpha_exec(alpha_ctx* ctx)
 {
   if(!ctx->done && ctx->regs[3]<ctx->memsize)
