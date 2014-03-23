@@ -1,4 +1,5 @@
 #include <alpha.h>
+#include <util.h>
 #include <stdio.h>
 static inline word getArg(alpha_ctx* ctx)
 {
@@ -14,6 +15,7 @@ static inline word getArg(alpha_ctx* ctx)
     }
   else
     badRead(ctx);
+  return 0xDEADBEEF;
 }
 static inline void writeWord(alpha_ctx* ctx, word addr, word value)
 {
@@ -39,6 +41,7 @@ static inline word readWord(alpha_ctx* ctx, word addr)
     }
   else
     badRead(ctx);
+  return 0xDEADBEEF;
 }
 static inline word popStack(alpha_ctx* ctx)
 {
@@ -50,6 +53,7 @@ static inline word popStack(alpha_ctx* ctx)
     }
   else
     badRead(ctx);
+  return 0xDEADBEEF;
 }
 static inline void pushStack(alpha_ctx* ctx, word value)
 {
