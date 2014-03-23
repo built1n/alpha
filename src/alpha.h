@@ -27,20 +27,21 @@ typedef uint32_t word;
 
 typedef struct alpha_ctx {
   byte* memory;
-  const word memsize, maxstacksize;
+  word memsize, maxstacksize;
   word stacksize;
-  zeta_regs regs;
+  word regs[4];
   bool done;
   int return_value;
-  bool debug;
 } alpha_ctx;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-alpha_ctx* alpha_init(byte* memory, word memsize, word maxstacksize, word sp, bool debug);
+alpha_ctx* alpha_init(byte* memory, word memsize, word maxstacksize, word sp);
 void alpha_exec(alpha_ctx*);
+#define ALPHA_OUT_OF_BOUNDS 0xFF
+#define ALPHA_BAD_INSTR 0xFF00
 
 #ifdef __cplusplus
 }
