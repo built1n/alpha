@@ -16,7 +16,8 @@ Instruction set:
 0b00 01 AA BB: Register-to-memory copy
 0b00 10 AA BB: Memory-to-register copy
 0b00 11 00 BB: Load next 4 bytes to BB
-==Flow control== There is no need for an unconditional jump, just load into R3!
+     	       - NOTE: when loading into R3, the PC will be incremented by 5 afterwards!
+==Flow control==
 0b01 00 AA BB: If R0==AA then jump to BB
 0b01 01 AA BB: If R0!=AA then jump to BB
 0b01 10 AA BB: If R0<AA then jump to BB
@@ -40,3 +41,5 @@ Instruction set:
 0b11 01 00 00: Halt execution, return R0 to the OS
 0b11 01 01 AA: Decrement R0, jump to AA if R0!=0
 0b11 01 10 AA: Print null-terminated string at AA
+0b11 01 11 BB: Unconditional jump to BB
+0b11 10 00 00: Print a newline
