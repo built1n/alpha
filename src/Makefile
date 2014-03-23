@@ -11,4 +11,4 @@ clean:
 	rm -f alpha
 	rm -f *~
 	rm -f a.out
-	cd disasm;make clean;
+	cd disasm;make clean
