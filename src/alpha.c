@@ -1,4 +1,5 @@
 #include <alpha.h>
+#include <util.h>
 #include <stdlib.h>
 #include <stdio.h>
 void badRead(alpha_ctx* ctx)
@@ -25,6 +26,7 @@ inline static byte readByte(alpha_ctx* ctx, word addr)
     return ctx->memory[addr];
   else
     badRead(ctx);
+  return 0;
 }
 alpha_ctx* alpha_init(byte* mem, word sz, word stackSz, word sp)
 {
@@ -35,7 +37,9 @@ alpha_ctx* alpha_init(byte* mem, word sz, word stackSz, word sp)
   ctx->regs[2]=sp;
   ctx->regs[0]=rand();
   ctx->regs[3]=0;
+  ctx->done=false;
   ctx->return_value=EXIT_SUCCESS;
+  return ctx;
 }
 void alpha_exec(alpha_ctx* ctx)
 {
@@ -44,4 +48,6 @@ void alpha_exec(alpha_ctx* ctx)
       exec_opcode(ctx, readByte(ctx, ctx->regs[3]));
       ++(ctx->regs[3]);
     }
+  else
+    ctx->done=true;
 }
