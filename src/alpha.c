@@ -34,11 +34,12 @@ alpha_ctx* alpha_init(byte* mem, word sz, word stackSz, word sp)
   ctx->maxstacksize=stackSz;
   ctx->regs[2]=sp;
   ctx->regs[0]=rand();
+  ctx->regs[3]=0;
   ctx->return_value=EXIT_SUCCESS;
 }
 void alpha_exec(alpha_ctx* ctx)
 {
-  if(!ctx->done)
+  if(!ctx->done && ctx->regs[3]<ctx->memsize)
     {
       exec_opcode(ctx, readByte(ctx, ctx->regs[3]));
       ++(ctx->regs[3]);
