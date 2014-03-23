@@ -153,12 +153,13 @@ static void exec_A(alpha_ctx* ctx, byte opcode)
 {
   ++(ctx->regs[opcode&0x03]);
 }
-static void exec_C(alpha_ctx* ctx, byte opcode)
+static void exec_extd(alpha_ctx* ctx, byte opcode)
 {
   switch((opcode&0x3C)>>2)
     {
     case 0x0:
       printf("%u", ctx->regs[0]);
+      fflush(stdout);
       break;
     case 0x01:
       ctx->regs[0]=ctx->memsize;
@@ -188,6 +189,12 @@ static void exec_C(alpha_ctx* ctx, byte opcode)
 	  }
 	break;
       }
+    case 0x07:
+      ctx->regs[3]=ctx->regs[opcode&0x03]-1;
+      break;
+    case 0x08:
+      putchar('\n');
+      break;
     default:
       badInstr(ctx);
     }
@@ -201,7 +208,6 @@ void exec_opcode(alpha_ctx* ctx, byte opcode)
   static void (*exec_table[16])(alpha_ctx*, byte)={ // table of handlers for first nibble in opcode 
   &exec_0, &exec_1, &exec_2, &exec_3, &exec_4,
   &exec_5, &exec_6, &exec_7, &exec_8, &exec_9,
-  &exec_A, &nop, &exec_C, &exec_C /* 0xC and 0xD are extd. instructions*/, &nop, &nop};
-
+  &exec_A, &nop, &exec_extd, &exec_extd, &exec_extd/* 0xC, 0xD, and 0x0E are extd. instructions*/, &nop};
   exec_table[(opcode&0xF0)>>4](ctx, opcode);
 }
