@@ -20,7 +20,7 @@ void badInstr(alpha_ctx* ctx)
   ctx->done=true;
   ctx->return_value=ALPHA_BAD_INSTR;
 }
-inline static byte readByte(alpha_ctx* ctx, word addr)
+byte readByte(alpha_ctx* ctx, word addr)
 {
   if(addr<ctx->memsize)
     return ctx->memory[addr];
