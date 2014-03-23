@@ -198,9 +198,10 @@ static void nop(alpha_ctx* ctx, byte opcode)
 }
 void exec_opcode(alpha_ctx* ctx, byte opcode)
 {
-  static void (*first_stage_exec[16])(alpha_ctx*, byte)={ // table of handlers for first nibble in opcode 
+  static void (*exec_table[16])(alpha_ctx*, byte)={ // table of handlers for first nibble in opcode 
   &exec_0, &exec_1, &exec_2, &exec_3, &exec_4,
   &exec_5, &exec_6, &exec_7, &exec_8, &exec_9,
   &exec_A, &nop, &exec_C, &exec_C /* 0xC and 0xD are extd. instructions*/, &nop, &nop};
-  first_stage_exec[(opcode&0xF0)>>4](ctx, opcode);
+
+  exec_table[(opcode&0xF0)>>4](ctx, opcode);
 }
