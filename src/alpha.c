@@ -34,8 +34,9 @@ alpha_ctx* alpha_init(byte* mem, word sz, word stackSz, word sp)
   ctx->memory=mem;
   ctx->memsize=sz;
   ctx->maxstacksize=stackSz;
-  ctx->regs[2]=sp;
   ctx->regs[0]=rand();
+  ctx->regs[1]=0;
+  ctx->regs[2]=sp;
   ctx->regs[3]=0;
   ctx->done=false;
   ctx->return_value=EXIT_SUCCESS;
