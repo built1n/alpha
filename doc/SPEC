@@ -25,17 +25,17 @@ Instruction set:
 0b10 00 00 AA: Push AA
 0b10 00 01 BB: Pop into BB
 ==Arithmetic==
-0b10 00 10 AA: Add AA
+0b10 00 10 AA: Add AA [to R0]
 0b10 00 11 AA: Subtract AA
 0b10 01 00 AA: Multiply AA
 0b10 01 01 AA: Divide AA
 0b10 01 10 AA: Modulo AA
-0b10 01 11 AA: Increment AA
-0b10 10 00 AA: Decrement AA
+0b10 01 11 AA: Decrement AA
+0b10 10 00 AA: Increment AA
 ==Other==
 0b11 00 00 00: Print R0 in decimal
-0b11 00 00 01: Load the memory size into R0
-0b11 00 01 AA: Push R3 onto the stack, jump to AA (call)
-0b11 00 10 AA: Jump and pop address on top of stack (return)
-0b11 00 11 00: Halt execution, return R0 to the OS
-0b11 01 00 AA: Decrement R0, jump to AA if R0!=0 (Z80 DJNZ)
+0b11 00 01 01: Load the memory size into R0
+0b11 00 10 AA: Push R3 onto the stack, jump to AA (call)
+0b11 00 11 AA: Jump and pop address on top of stack (return)
+0b11 01 00 00: Halt execution, return R0 to the OS
+0b11 01 01 AA: Decrement R0, jump to AA if R0!=0 (Z80 DJNZ)
