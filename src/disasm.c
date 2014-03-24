@@ -68,7 +68,10 @@ static inline void pushStack(alpha_ctx* ctx, word value)
 }
 static void exec_0(alpha_ctx* ctx, byte opcode)
 {
-  printf("MOV R%1d, R%1d\n", opcode&0x03, (opcode&0xC)>>2);
+  if((opcode&3)!=(opcode&0xC)>>2)
+    printf("MOV R%1d, R%1d\n", opcode&0x03, (opcode&0xC)>>2);
+  else
+    printf("NOP\n");
 }
 static void exec_1(alpha_ctx* ctx, byte opcode) // reg to mem
 {
@@ -171,7 +174,16 @@ static void exec_extd(alpha_ctx* ctx, byte opcode)
       printf("JMP R%1d\n", opcode&3);
       break;
     case 0x08:
-      printf("NL\n");
+      switch(opcode&3)
+	{
+	case 0:
+	  printf("NL\n");
+	  break;
+	case 1:
+	  printf("JR 0x%02X\n", readByte(ctx, ctx->regs[3]+1));
+	  ++ctx->regs[3];
+	  break;
+	}
       break;
     default:
       badInstr(ctx);
