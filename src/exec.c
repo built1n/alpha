@@ -193,9 +193,26 @@ static void exec_extd(alpha_ctx* ctx, byte opcode)
       ctx->regs[3]=ctx->regs[opcode&0x03]-1;
       break;
     case 0x08:
-      putchar('\n');
+      switch(opcode&0x03)
+	{
+	case 0:
+	  putchar('\n');
+	  break;
+	case 1:
+	  {
+	    byte diff=readByte(ctx, ctx->regs[3]+1)-1;
+	    if(diff&0x80)
+	      ctx->regs[3]-=(diff&0x7F);
+	    else
+	      ctx->regs[3]+=(diff&0x7F);
+	    --ctx->regs[3];
+	    break;
+	  }
+	default:
+	  badInstr(ctx);
+	}
       break;
-    default:
+	default:
       badInstr(ctx);
     }
 }

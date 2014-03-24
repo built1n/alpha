@@ -43,3 +43,4 @@ Instruction set:
 0b11 01 10 AA: Print null-terminated string at AA
 0b11 01 11 BB: Unconditional jump to BB
 0b11 10 00 00: Print a newline
+0b11 10 00 01: Add the next byte to R3, treating it as a signed value
