@@ -36,6 +36,7 @@ bool interactive=true;
 void do_help(char* name)
 {
   cerr << "Usage: " << name << " [FILE] [OPTIONS]" << endl;
+  cerr << "Execute the Alpha machine code in FILE or read from standard input." << endl;
   cerr << "  -d, --debug\t\t\tEnable debugging mode" << endl;
   cerr << "  -D, --disasm\t\t\tRun disassembler and exit" << endl;
   cerr << "      --stack-size=SIZE\t\tSet stack size to SIZE" << endl;
@@ -77,7 +78,7 @@ void parse_args(int argc, char* argv[])
 	  do_help(argv[0]);
 	  exit(1);
 	}
-      else
+      else if(arg.length()>0 and arg[0]!='-')
 	{
 	  if(interactive)
 	    {
@@ -98,6 +99,11 @@ void parse_args(int argc, char* argv[])
 	      cerr << "Only one file can be specified." << endl;
 	      exit(2);
 	    }
+	}
+      else
+	{
+	  cerr << "Unknown option `" << arg << "'" << endl;
+	  exit(1);
 	}
     }
 }
