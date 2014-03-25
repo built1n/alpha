@@ -45,7 +45,7 @@ void ctrlc(int signum)
   while(!good)
     {
       string str;
-      cout << "?";
+      cout << "? " << flush;
       cin >> str;
       if(str.length()==0)
 	exit(1);
