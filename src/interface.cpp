@@ -36,6 +36,9 @@ bool interactive=true;
 void do_help(char* name)
 {
   cerr << "Usage: " << name << " [FILE] [OPTIONS]" << endl;
+  cerr << "  -d, --debug\t\t\tEnable debugging mode" << endl;
+  cerr << "  -D, --disasm\t\t\tRun disassembler and exit" << endl;
+  cerr << "      --stack-size=SIZE\t\tSet stack size to SIZE" << endl;
 }
 void parse_args(int argc, char* argv[])
 {
