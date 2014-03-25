@@ -25,14 +25,106 @@
 #include <cctype>
 #include <cstdio>
 #include <csignal>
+#include <cstring>
 using namespace std;
 char hex_chars[]={'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'};
 alpha_ctx* ctx;
-
+bool disasm=false, debugger=false;
+word stacksize=2048;
+istream *in=&cin;
+bool interactive=true;
+void do_help(char* name)
+{
+  cerr << "Usage: " << name << " [FILE] [OPTIONS]" << endl;
+}
+void parse_args(int argc, char* argv[])
+{
+  for(int i=1;i<argc;++i)
+    {
+      string arg=argv[i];
+      if(arg=="-D" or arg=="--disasm") // disassembler
+	{
+	  if(!debugger)
+	    {
+	      disasm=true;
+	      stacksize=0;
+	    }
+	  else
+	    {
+	      cerr << "Cannot use debugger with disassembler." << endl;
+	      exit(1);
+	    }
+	}
+      else if(arg=="--debug" or arg=="-d")
+	{
+	  if(!disasm)
+	    debugger=true;
+	  else
+	    {
+	      cerr << "Cannot use debugger with disassembler." << endl;
+	      exit(1);
+	    } 
+	}
+      else if(arg.substr(0, strlen("--stack-size="))=="--stack-size=")
+	{
+	  stacksize=atoi(arg.substr(strlen("--stack-size=")+1, -1).c_str());
+	}
+      else if(arg=="--help")
+	{
+	  do_help(argv[0]);
+	  exit(1);
+	}
+      else
+	{
+	  if(interactive)
+	    {
+	      static ifstream ifs(arg.c_str());
+	      if(ifs.good())
+		{
+		  in=&ifs;
+		  interactive=false;
+		}
+	      else
+		{
+		  cerr << "Error opening file." << endl;
+		  exit(4);
+		}
+	    }
+	  else
+	    {
+	      cerr << "Only one file can be specified." << endl;
+	      exit(2);
+	    }
+	}
+    }
+}
 void run()
 {
-  while(!ctx->done)
-    alpha_exec(ctx);
+  if(!disasm)
+    {
+      if(!debugger)
+	{
+	  while(!ctx->done)
+	    alpha_exec(ctx);
+	}
+      else
+	{
+	  while(!ctx->done)
+	    {
+	      alpha_exec(ctx);
+	      alpha_print_state(ctx);
+	      cout << "Press enter to step..." << endl;
+	      cin.get();
+	    }
+	}
+    }
+  else
+    {
+      while(!ctx->done)
+	{
+	  alpha_disasm(ctx);
+	}
+    }
 }
 void ctrlc(int signum)
 {
@@ -41,7 +133,7 @@ void ctrlc(int signum)
   cout << "2. Abort" << endl;
   cout << "3. Debug" << endl;
   bool good=false;
-  signal(SIGINT, SIG_DFL);
+  signal(SIGINT, &exit);
   while(!good)
     {
       string str;
@@ -63,23 +155,7 @@ void ctrlc(int signum)
 }  
 int main(int argc, char* argv[])
 {
-  istream* in=&cin;
-  ifstream ifs;
-  if(argc>=2)
-    {
-      ifs.open(argv[1]);
-      // read from file
-      if(ifs.good())
-	in=&ifs;
-      else
-	{
-	  cerr << "Cannot read from file.\n" << endl;
-	  return -1;
-	}
-    }
-  bool interactive=false;
-  if(in==&cin)
-    interactive=true;
+  parse_args(argc, argv);
   vector<byte> prog;
   while(in->good())
     {
@@ -110,12 +186,13 @@ int main(int argc, char* argv[])
   byte* p=(byte*)malloc(prog.size()+2048);
   for(unsigned int i=0;i<prog.size();++i)
     p[i]=prog[i];
-  signal(SIGINT, &ctrlc);
+  if(!disasm)
+    signal(SIGINT, &ctrlc);
   ctx=alpha_init((byte*)p, // memory
-		 prog.size()+2048, // mem size
-		 2048, // stack size
+		 prog.size()+stacksize, // mem size
+		 stacksize, // stack size
 		 prog.size()); // initial stack pointer
-  if(interactive)
+  if(interactive && !disasm)
     cout << endl << "Beginning execution..." << endl;
   run();
   return ctx->return_value;
