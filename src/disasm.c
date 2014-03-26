@@ -34,7 +34,7 @@ static void exec_1(alpha_ctx* ctx, byte opcode) // reg to mem
 }
 static void exec_2(alpha_ctx* ctx, byte opcode)
 {
-  printf("MOV R%1d, (R%1d\n)", opcode&0x03, (opcode&0xC)>>2);
+  printf("MOV R%1d, (R%1d)\n", opcode&0x03, (opcode&0xC)>>2);
 }
 static void exec_3(alpha_ctx* ctx, byte opcode)
 {
