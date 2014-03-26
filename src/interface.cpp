@@ -15,7 +15,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
+#define DEFAULT_STACK_SIZE 2048
 #include <fstream>
 #include <iostream>
 #include <alpha.h>
@@ -30,7 +30,7 @@ using namespace std;
 char hex_chars[]={'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'};
 alpha_ctx* ctx;
 bool disasm=false, debugger=false;
-word stacksize=2048;
+word stacksize=DEFAULT_STACK_SIZE;
 istream *in=&cin;
 bool interactive=true;
 bool ascii=true;
@@ -38,14 +38,14 @@ bool compile=false;
 string compile_output="a.out";
 void do_help(char* name)
 {
-  cerr << "Usage: " << name << " [FILE] [OPTION...]" << endl;
+  cerr << "Usage: " << name << " [options] <file>" << endl;
   cerr << "Execute the Alpha machine code in FILE or read from standard input." << endl;
   cerr << "  -b, --binary\t\t\tTreat the code as raw bytes instead of hex" << endl;
   cerr << "  -c, --compile\t\t\tStore the hex input as raw binary in a.out" << endl;
   cerr << "  -d, --debug\t\t\tEnable debugging mode" << endl;
   cerr << "  -D, --disasm\t\t\tRun disassembler and exit" << endl;
-  cerr << "  -o FILE\t\t\tOutput compiled code to FILE instead of a.out" << endl;
-  cerr << "      --stack-size=SIZE\t\tSet stack size to SIZE" << endl;
+  cerr << "  -o <file>\t\t\tOutput compiled code to FILE instead of a.out" << endl;
+  cerr << "      --stack-size=<size>\t\tSet stack size to SIZE instead of default " <<DEFAULT_STACK_SIZE<<"." << endl;
 }
 void parse_args(int argc, char* argv[])
 {
@@ -239,7 +239,7 @@ int main(int argc, char* argv[])
       while(in->good())
 	prog.push_back(in->get());
     }
-  byte* p=(byte*)malloc(prog.size()+2048);
+  byte* p=(byte*)malloc(prog.size()+stacksize);
   for(unsigned int i=0;i<prog.size();++i)
     p[i]=prog[i];
   if(!disasm)
