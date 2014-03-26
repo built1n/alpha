@@ -140,10 +140,6 @@ static void exec_extd(alpha_ctx* ctx, byte opcode)
       badInstr(ctx);
     }
 }
-static void nop(alpha_ctx* ctx, byte opcode)
-{
-  return;
-}
 static void unknown_opcode(alpha_ctx* ctx, byte opcode)
 {
   printf("DATA 0x%02X\n", opcode);
@@ -153,6 +149,6 @@ void disasm_opcode(alpha_ctx* ctx, byte opcode)
   static void (*exec_table[16])(alpha_ctx*, byte)={ // table of handlers for first nibble in opcode 
   &exec_0, &exec_1, &exec_2, &exec_3, &exec_4,
   &exec_5, &exec_6, &exec_7, &exec_8, &exec_9,
-  &exec_A, &unknown_opcode, &exec_extd, &exec_extd, &exec_extd/* 0xC, 0xD, and 0x0E are extd. instructions*/, &unknown_opcode);
+  &exec_A, &unknown_opcode, &exec_extd, &exec_extd, &exec_extd/* 0xC, 0xD, and 0x0E are extd. instructions*/, &unknown_opcode};
   exec_table[(opcode&0xF0)>>4](ctx, opcode);
 }
