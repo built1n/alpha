@@ -33,12 +33,18 @@ bool disasm=false, debugger=false;
 word stacksize=2048;
 istream *in=&cin;
 bool interactive=true;
+bool ascii=true;
+bool compile=false;
+string compile_output;
 void do_help(char* name)
 {
   cerr << "Usage: " << name << " [FILE] [OPTIONS]" << endl;
   cerr << "Execute the Alpha machine code in FILE or read from standard input." << endl;
+  cerr << "  -b, --binary\t\t\tTreat the code as raw bytes instead of hex" << endl;
+  cerr << "  -c, --compile\t\t\tConvert the hex input to raw binary in a.out" << endl;
   cerr << "  -d, --debug\t\t\tEnable debugging mode" << endl;
   cerr << "  -D, --disasm\t\t\tRun disassembler and exit" << endl;
+  cerr << "  -o FILE\t\t\tOutput compiled code to FILE instead of a.out" << endl;
   cerr << "      --stack-size=SIZE\t\tSet stack size to SIZE" << endl;
 }
 void parse_args(int argc, char* argv[])
@@ -46,7 +52,15 @@ void parse_args(int argc, char* argv[])
   for(int i=1;i<argc;++i)
     {
       string arg=argv[i];
-      if(arg=="-D" or arg=="--disasm") // disassembler
+      if(arg=="-b" or arg=="--binary")
+	{
+	  ascii=false;
+	}
+      else if(arg=="-c" or arg=="--compile")
+	{
+	  compile=true;
+	}
+      else if(arg=="-D" or arg=="--disasm") // disassembler
 	{
 	  if(!debugger)
 	    {
@@ -78,6 +92,14 @@ void parse_args(int argc, char* argv[])
 	  do_help(argv[0]);
 	  exit(1);
 	}
+      else if(arg=="-o")
+	{
+	  if(i<argc-1)
+	    {
+	      compile_output=argv[i+1];
+	      ++i;
+	    }
+	}
       else if(arg.length()>0 and arg[0]!='-')
 	{
 	  if(interactive)
@@ -86,6 +108,10 @@ void parse_args(int argc, char* argv[])
 	      if(ifs.good())
 		{
 		  in=&ifs;
+		  if(!ascii)
+		    {
+		      in=new ifstream(arg.c_str(), ios::binary);
+		    }
 		  interactive=false;
 		}
 	      else
@@ -105,6 +131,11 @@ void parse_args(int argc, char* argv[])
 	  cerr << "Unknown option `" << arg << "'" << endl;
 	  exit(1);
 	}
+    }
+  if(interactive and !ascii)
+    {
+      cerr << "Cannot read binary input from terminal." << endl;
+      exit(1);
     }
 }
 void run()
@@ -161,36 +192,52 @@ void ctrlc(int signum)
 	exit(128);
     }
   exit(1);
-}  
+}
+void compile_to_binary(vector<byte> prog)
+{
+  ofstream aout(compile_output.c_str(), ios::binary);
+  for(word i=0;i<prog.size();++i)
+    {
+      aout<<prog[i];
+    }
+}
 int main(int argc, char* argv[])
 {
   parse_args(argc, argv);
   vector<byte> prog;
-  while(in->good())
+  if(ascii)
     {
-      if(interactive)
-	printf("0x%08X:", (unsigned int)prog.size()); // really shouldn't mix C-style and stream I/O!
-      string line;
-      getline(*in, line); // get line to comment
-      for(unsigned int i=0;i<line.length();i+=2)
+      while(in->good())
 	{
-	  byte val=0xFF; 
-	  for(int j=0;j<16;++j)
+	  if(interactive)
+	    printf("0x%08X:", (unsigned int)prog.size()); // really shouldn't mix C-style and stream I/O!
+	  string line;
+	  getline(*in, line);
+	  for(unsigned int i=0;i<line.length();i+=2)
 	    {
-	      if(toupper(line[i+1])==hex_chars[j])
+	      byte val=0xFF;
+	      for(int j=0;j<16;++j)
 		{
-		  val=j;
+		  if(toupper(line[i+1])==hex_chars[j])
+		    {
+		      val=j;
+		    }
 		}
-	    }
-	  for(int j=0;j<16;++j)
-	    {
-	      if(toupper(line[i])==hex_chars[j])
+	      for(int j=0;j<16;++j)
 		{
-		  val|=((j&0xF)<<4);
+		  if(toupper(line[i])==hex_chars[j])
+		    {
+		      val|=((j&0xF)<<4);
+		    }
 		}
+	      prog.push_back(val);
 	    }
-	  prog.push_back(val);
 	}
+    }
+  else
+    {
+      while(in->good())
+	prog.push_back(in->get());
     }
   byte* p=(byte*)malloc(prog.size()+2048);
   for(unsigned int i=0;i<prog.size();++i)
@@ -201,8 +248,13 @@ int main(int argc, char* argv[])
 		 prog.size()+stacksize, // mem size
 		 stacksize, // stack size
 		 prog.size()); // initial stack pointer
-  if(interactive && !disasm)
+  if(interactive && !disasm && !compile)
     cout << endl << "Beginning execution..." << endl;
+  if(compile)
+    {
+      compile_to_binary(prog); // FIXME
+      return 0;
+    }
   run();
   return ctx->return_value;
 }
