@@ -16,7 +16,7 @@ Instruction set:
 0b00 01 AA BB: Register-to-memory copy
 0b00 10 AA BB: Memory-to-register copy
 0b00 11 00 BB: Load next 4 bytes to BB
-     	       - NOTE: when loading into R3, the PC will be incremented by 5 afterwards!
+  - NOTE: when loading into R3, the PC will be incremented by 5 afterwards!
 ==Flow control==
 0b01 00 AA BB: If R0==AA then jump to BB
 0b01 01 AA BB: If R0!=AA then jump to BB
