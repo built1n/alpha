@@ -45,7 +45,7 @@ void do_help(char* name)
   cerr << "  -d, --debug\t\t\tEnable debugging mode" << endl;
   cerr << "  -D, --disasm\t\t\tRun disassembler and exit" << endl;
   cerr << "  -o <file>\t\t\tOutput compiled code to FILE instead of a.out" << endl;
-  cerr << "      --stack-size=<size>\tSet stack size to SIZE instead of default " <<DEFAULT_STACK_SIZE<<"." << endl;
+  cerr << "      --stack-size=<size>\tSet stack size to SIZE instead of default " <<DEFAULT_STACK_SIZE<< endl;
 }
 void parse_args(int argc, char* argv[])
 {
