@@ -45,7 +45,7 @@ void do_help(char* name)
   cerr << "  -d, --debug\t\t\tEnable debugging mode" << endl;
   cerr << "  -D, --disasm\t\t\tRun disassembler and exit" << endl;
   cerr << "  -o <file>\t\t\tOutput compiled code to FILE instead of a.out" << endl;
-  cerr << "      --stack-size=<size>\t\tSet stack size to SIZE instead of default " <<DEFAULT_STACK_SIZE<<"." << endl;
+  cerr << "      --stack-size=<size>\tSet stack size to SIZE instead of default " <<DEFAULT_STACK_SIZE<<"." << endl;
 }
 void parse_args(int argc, char* argv[])
 {
@@ -62,7 +62,7 @@ void parse_args(int argc, char* argv[])
 	}
       else if(arg=="-D" or arg=="--disasm") // disassembler
 	{
-	  if(!debugger)
+	  if(!debugger or compile)
 	    {
 	      disasm=true;
 	      stacksize=0;
@@ -137,6 +137,16 @@ void parse_args(int argc, char* argv[])
       cerr << "Cannot read binary input from terminal." << endl;
       exit(1);
     }
+  if(compile and debugger)
+    {
+      cerr << "Cannot run compiler and debugger." << endl;
+      exit(1);
+    }
+  if(compile and disasm)
+    {
+      cerr << "Cannot run compiler and disassembler." << endl;
+      exit(1);
+    }
 }
 void run()
 {
@@ -195,10 +205,10 @@ void ctrlc(int signum)
 }
 void compile_to_binary(vector<byte> prog)
 {
-  ofstream aout(compile_output.c_str(), ios::binary);
+  ofstream out(compile_output.c_str(), ios::binary);
   for(word i=0;i<prog.size();++i)
     {
-      aout<<prog[i];
+      out<<prog[i];
     }
 }
 int main(int argc, char* argv[])
@@ -216,19 +226,33 @@ int main(int argc, char* argv[])
 	  for(unsigned int i=0;i<line.length();i+=2)
 	    {
 	      byte val=0xFF;
+	      bool good=false;
 	      for(int j=0;j<16;++j)
 		{
 		  if(toupper(line[i+1])==hex_chars[j])
 		    {
 		      val=j;
+		      good=true;
 		    }
 		}
+	      if(!good)
+		{
+		  cerr << "Bad hex input." << endl;
+		  return 1;
+		}
+	      good=false;
 	      for(int j=0;j<16;++j)
 		{
 		  if(toupper(line[i])==hex_chars[j])
 		    {
 		      val|=((j&0xF)<<4);
+		      good=true;
 		    }
+		}
+	      if(!good)
+		{
+		  cerr << "Bad hex input." << endl;
+		  return 1;
 		}
 	      prog.push_back(val);
 	    }
@@ -252,7 +276,7 @@ int main(int argc, char* argv[])
     cout << endl << "Beginning execution..." << endl;
   if(compile)
     {
-      compile_to_binary(prog); // FIXME
+      compile_to_binary(prog);
       return 0;
     }
   run();
