@@ -43,19 +43,19 @@ static void exec_3(alpha_ctx* ctx, byte opcode)
 }
 static void exec_4(alpha_ctx* ctx, byte opcode)
 {
-  printf("JE R%1d, R%1d\n", opcode&0xC, opcode&0x3);
+  printf("JE R%1d, R%1d\n", (opcode&0xC)>>2, opcode&0x3);
 }
 static void exec_5(alpha_ctx* ctx, byte opcode)
 {
-  printf("JNE R%1d, R%1d\n", opcode&0xC, opcode&0x3);
+  printf("JNE R%1d, R%1d\n", (opcode&0xC)>>2, opcode&0x3);
 }
 static void exec_6(alpha_ctx* ctx, byte opcode)
 {
-  printf("JL R%1d, R%1d\n", opcode&0xC, opcode&0x3);
+  printf("JL R%1d, R%1d\n",(opcode&0xC)>>2, opcode&0x3);
 }
 static void exec_7(alpha_ctx* ctx, byte opcode)
 {
-  printf("JG R%1d, R%1d\n", opcode&0xC, opcode&0x3);
+  printf("JG R%1d, R%1d\n", (opcode&0xC)>>2, opcode&0x3);
 }
 static void exec_8(alpha_ctx* ctx, byte opcode)
 {
