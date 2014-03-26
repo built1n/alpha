@@ -138,7 +138,29 @@ static void exec_extd(alpha_ctx* ctx, byte opcode)
 	  printf("JR 0x%02X\n", readByte(ctx, ctx->regs[3]+1));
 	  ++ctx->regs[3];
 	  break;
+	case 2:
+	  printf("NOT\n");
+	  break;
+	case 3:
+	  printf("LROT\n");
+	  break;
+	  // no default here
 	}
+      break;
+    case 0x09:
+      printf("AND R%1d\n", opcode&3);
+      break;
+    case 0xA:
+      printf("OR R%1d\n", opcode&3);
+      break;
+    case 0x0B:
+      printf("XOR R%1d\n", opcode&3);
+      break;
+    case 0x0C:
+      printf("LSH R%1d\n", opcode&3);
+      break;
+    case 0x0D:
+      printf("RSH R%1d\n", opcode&3);
       break;
     default:
       badInstr(ctx);
