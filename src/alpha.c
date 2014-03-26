@@ -49,6 +49,10 @@ void alpha_print_state(alpha_ctx* ctx)
   printf("R1: 0x%08X\n", ctx->regs[1]);
   printf("R2: 0x%08X\n", ctx->regs[2]);
   printf("R3: 0x%08X\n", ctx->regs[3]);
+  printf("Disassembly of instruction: ");
+  word pc=ctx->regs[3];
+  alpha_disasm(ctx);
+  ctx->regs[3]=pc;
 }
 void alpha_exec(alpha_ctx* ctx)
 {
