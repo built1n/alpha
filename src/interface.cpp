@@ -205,6 +205,7 @@ void ctrlc(int signum)
 void compile_to_binary(vector<byte> prog)
 {
   ofstream out(compile_output.c_str(), ios::binary);
+  out<<"FW";
   for(word i=0;i<prog.size();++i)
     {
       out<<prog[i];
@@ -259,8 +260,19 @@ int main(int argc, char* argv[])
     }
   else
     {
-      while(in->good())
-	prog.push_back(in->get());
+      char magic[2];
+      magic[0]=in->get();
+      magic[1]=in->get();
+      if(magic[0]=='F' and magic[1]=='W')
+	{
+	  while(in->good())
+	    prog.push_back(in->get());
+	}
+      else
+	{
+	  cerr << "Bad magic number." << endl;
+	  return 1;
+	}
     }
   byte* p=(byte*)malloc(prog.size()+stacksize);
   for(unsigned int i=0;i<prog.size();++i)
