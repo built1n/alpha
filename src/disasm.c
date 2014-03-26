@@ -1,6 +1,7 @@
 #include <alpha.h>
 #include <util.h>
 #include <stdio.h>
+#include <stdlib.h>
 static inline word getArg(alpha_ctx* ctx)
 {
   if(ctx->regs[3]<(ctx->memsize)-4)
@@ -14,7 +15,10 @@ static inline word getArg(alpha_ctx* ctx)
       return ret;
     }
   else
-    badRead(ctx);
+    {
+      badRead(ctx);
+      exit(1);
+    }
   return 0xDEADBEEF;
 }
 static void exec_0(alpha_ctx* ctx, byte opcode)
