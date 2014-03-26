@@ -44,3 +44,11 @@ Instruction set:
 0b11 01 11 BB: Unconditional jump to BB
 0b11 10 00 00: Print a newline
 0b11 10 00 01: Add the next byte to R3, treating it as a signed value
+==Bitwise==
+0b11 10 00 10: Not
+0b11 10 00 11: Rotate left 1
+0b11 10 01 AA: And AA
+0b11 10 10 AA: Or AA
+0b11 10 11 AA: Xor AA
+0b11 11 00 AA: Leftshift AA
+0b11 11 01 AA: Rightshift AA

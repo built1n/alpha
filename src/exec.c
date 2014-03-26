@@ -208,11 +208,42 @@ static void exec_extd(alpha_ctx* ctx, byte opcode)
 	    --ctx->regs[3];
 	    break;
 	  }
+	case 2:
+	  ctx->regs[0]=~ctx->regs[0];
+	  break;
+	case 3:
+	  register byte firstBit=(ctx->regs[0]&1);
+	  ctx->regs[0]>>=1;
+	  ctx->regs[0]&=firstBit<<31;
+	  break;
 	default:
 	  badInstr(ctx);
 	}
       break;
-	default:
+    case 0x09:
+      ctx->regs[0]&=ctx->regs[opcode&3];
+      break; 
+    case 0x0A:
+      ctx->regs[0]|=ctx->regs[opcode&3];
+      break;
+    case 0x0B:
+      ctx->regs[0]^=ctx->regs[opcode&3];
+      break;
+    default:
+      badInstr(ctx);
+    }
+}
+static void exec_F(alpha_ctx* ctx, byte opcode)
+{
+  switch(opcode&0xC)
+    {
+    case 0:
+      ctx->regs[0]<<=ctx->regs[opcode&3];
+      break;
+    case 1:
+      ctx->regs[0]>>=ctx->regs[opcode&3];
+      break;
+    default:
       badInstr(ctx);
     }
 }
@@ -225,6 +256,6 @@ void exec_opcode(alpha_ctx* ctx, byte opcode)
   static void (*exec_table[16])(alpha_ctx*, byte)={ // table of handlers for first nibble in opcode 
   &exec_0, &exec_1, &exec_2, &exec_3, &exec_4,
   &exec_5, &exec_6, &exec_7, &exec_8, &exec_9,
-  &exec_A, &nop, &exec_extd, &exec_extd, &exec_extd/* 0xC, 0xD, and 0x0E are extd. instructions*/, &nop};
+  &exec_A, &nop, &exec_extd, &exec_extd, &exec_extd/* 0xC, 0xD, and 0x0E are extd. instructions*/, &exec_F};
   exec_table[(opcode&0xF0)>>4](ctx, opcode);
 }
