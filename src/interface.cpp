@@ -35,13 +35,13 @@ istream *in=&cin;
 bool interactive=true;
 bool ascii=true;
 bool compile=false;
-string compile_output;
+string compile_output="a.out";
 void do_help(char* name)
 {
-  cerr << "Usage: " << name << " [FILE] [OPTIONS]" << endl;
+  cerr << "Usage: " << name << " [FILE] [OPTION...]" << endl;
   cerr << "Execute the Alpha machine code in FILE or read from standard input." << endl;
   cerr << "  -b, --binary\t\t\tTreat the code as raw bytes instead of hex" << endl;
-  cerr << "  -c, --compile\t\t\tConvert the hex input to raw binary in a.out" << endl;
+  cerr << "  -c, --compile\t\t\tStore the hex input as raw binary in a.out" << endl;
   cerr << "  -d, --debug\t\t\tEnable debugging mode" << endl;
   cerr << "  -D, --disasm\t\t\tRun disassembler and exit" << endl;
   cerr << "  -o FILE\t\t\tOutput compiled code to FILE instead of a.out" << endl;
