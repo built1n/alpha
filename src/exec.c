@@ -212,10 +212,12 @@ static void exec_extd(alpha_ctx* ctx, byte opcode)
 	  ctx->regs[0]=~ctx->regs[0];
 	  break;
 	case 3:
-	  register byte firstBit=(ctx->regs[0]&1);
-	  ctx->regs[0]>>=1;
-	  ctx->regs[0]&=firstBit<<31;
-	  break;
+          {
+	    register byte firstBit=(ctx->regs[0]&1);
+	    ctx->regs[0]>>=1;
+	    ctx->regs[0]&=firstBit<<31;
+	    break;
+          }
 	default:
 	  badInstr(ctx);
 	}
