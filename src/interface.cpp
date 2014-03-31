@@ -56,7 +56,7 @@ void parse_args(int argc, char* argv[])
 	{
 	  ascii=false;
 	}
-      else if(arg=="-c" or arg=="--compile")
+	else if(arg=="-c" or arg=="--compile")
 	{
 	  compile=true;
 	}
@@ -215,9 +215,9 @@ int main(int argc, char* argv[])
 {
   parse_args(argc, argv);
   vector<byte> prog;
-  if(ascii)
+  while(in->good())
     {
-      while(in->good())
+      if(ascii)
 	{
 	  if(interactive)
 	    printf("0x%08X:", (unsigned int)prog.size()); // really shouldn't mix C-style and stream I/O!
@@ -257,23 +257,25 @@ int main(int argc, char* argv[])
 	      prog.push_back(val);
 	    }
 	}
-    }
-  else
-    {
-      char magic[2];
-      magic[0]=in->get();
-      magic[1]=in->get();
-      if(magic[0]=='F' and magic[1]=='W')
-	{
-	  while(in->good())
-	    prog.push_back(in->get());
-	}
       else
 	{
-	  cerr << "Bad magic number." << endl;
-	  return 1;
+	  in->seekg(0);
+	  char magic[2];
+	  magic[0]=in->get();
+	  magic[1]=in->get();
+	  if(magic[0]=='F' and magic[1]=='W')
+	    {
+	      while(in->good())
+		prog.push_back(in->get());
+	    }
+	  else
+	    {
+	      cerr << "Bad magic number." << endl;
+	      return 1;
+	    }
 	}
     }
+
   byte* p=(byte*)malloc(prog.size()+stacksize);
   for(unsigned int i=0;i<prog.size();++i)
     p[i]=prog[i];
