@@ -1,54 +1,17 @@
-An Alpha virtual machine has 4 usable registers.
-They are all 32 bits wide.
-Register name         Use
-R0                    Accumulator
-R1		      General-purpose
-R2		      Stack pointer
-R3		      Program counte
-There is also a 32-bit status register
-Byte ordering is big-endian.
-Registers are numbered 0 to 3.
-Registers are specified with 2 bits
-AA represents the source while BB represents the destination
+An Alpha virtual machine has 16 32-bit registers
+R0: Accumulator
+R1-R13: General-purpose
+R14: Stack pointer
+R15: Program counter
+Byte ordering is big-endian
 Instruction set:
-==Memory==
-0b00 00 AA BB: Register-to-register copy
-0b00 01 AA BB: Register-to-memory copy
-0b00 10 AA BB: Memory-to-register copy
-0b00 11 00 BB: Load next 4 bytes to BB
-  - NOTE: when loading into R3, the PC will be incremented by 5 afterwards!
-==Flow control==
-0b01 00 AA BB: If R0==AA then jump to BB
-0b01 01 AA BB: If R0!=AA then jump to BB
-0b01 10 AA BB: If R0<AA then jump to BB
-0b01 11 AA BB: If R0>AA then jump to BB
-==Stack==
-0b10 00 00 AA: Push AA
-0b10 00 01 BB: Pop into BB
-==Arithmetic==
-0b10 00 10 AA: Add AA [to R0]
-0b10 00 11 AA: Subtract AA
-0b10 01 00 AA: Multiply AA
-0b10 01 01 AA: Divide AA
-0b10 01 10 AA: Modulo AA
-0b10 01 11 AA: Decrement AA
-0b10 10 00 AA: Increment AA
-==Other==
-0b11 00 00 00: Print R0 in decimal
-0b11 00 01 01: Load the memory size into R0
-0b11 00 10 AA: Push R3 onto the stack, jump to AA (call)
-0b11 00 11 AA: Jump and pop address on top of stack (return)
-0b11 01 00 00: Halt execution, return R0 to the OS
-0b11 01 01 AA: Decrement R0, jump to AA if R0!=0
-0b11 01 10 AA: Print null-terminated string at AA
-0b11 01 11 BB: Unconditional jump to BB
-0b11 10 00 00: Print a newline
-0b11 10 00 01: Add the next byte to R3, treating it as a signed value
-==Bitwise==
-0b11 10 00 10: Not
-0b11 10 00 11: Rotate left 1
-0b11 10 01 AA: And AA
-0b11 10 10 AA: Or AA
-0b11 10 11 AA: Xor AA
-0b11 11 00 AA: Leftshift AA
-0b11 11 01 AA: Rightshift AA
+===Memory===
+0x00 AB: Copy register A to register B
+0x01 AB: Copy word pointed to by A to register B
+0x02 AB: Copy register A to location pointed to by register B
+0x03 0B <WORD>: Copy WORD to register B
+===Flow control===
+0x04 0B: Jump to location in register B
+0x04 1B: Add the signed value in register B to R15
+0x05 AA: Add the signed value AA to R15
+0x06 <WORD>: Jump to <WORD>
