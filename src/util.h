@@ -5,3 +5,5 @@ void badRead(alpha_ctx*);
 void badWrite(alpha_ctx*);
 void badInstr(alpha_ctx*);
 byte readByte(alpha_ctx*, word);
+#define PC 15
+#define SP 14

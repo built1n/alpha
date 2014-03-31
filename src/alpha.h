@@ -29,7 +29,7 @@ typedef struct alpha_ctx {
   byte* memory;
   word memsize, maxstacksize;
   word stacksize;
-  word regs[4];
+  word regs[16];
   bool done;
   int return_value;
 } alpha_ctx;
@@ -45,7 +45,6 @@ extern "C" {
 
 #define ALPHA_OUT_OF_BOUNDS 0xFF
 #define ALPHA_BAD_INSTR 0xFF00
-
 #ifdef __cplusplus
 }
 #endif
