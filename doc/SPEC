@@ -9,7 +9,6 @@ Instruction set:
 0x01 AB: Copy word pointed to by A to register B
 0x02 AB: Copy register A to location pointed to by register B
 0x03 0B <WORD>: Copy WORD to register B
-0x03 1B <WORD>: Copy word pointed to by WORD to register B
 ===Flow control===
 0x04 AB: If register A == R0, jump to register B
 0x05 AB: If register A < R0, jump to register B
@@ -40,5 +39,5 @@ Instruction set:
 0x80 <BYTE>: Print ASCII BYTE
 0x81 0A: Print least significant byte of register A
 0x81 1A: Print null-terminated string at register A, length of string will be added to register A
-===Miscellaneous===
-0xF0: Halt execution, return R0 to OS
+0x81 2A: Read an integer into register A
+0x81 3A: Print register A as an unsigned integer
