@@ -1,6 +1,5 @@
 An Alpha virtual machine has 16 32-bit registers
-R0: Accumulator
-R1-R13: General-purpose
+R0-R13: General-purpose
 R14: Stack pointer
 R15: Program counter
 Byte ordering is big-endian
@@ -10,8 +9,36 @@ Instruction set:
 0x01 AB: Copy word pointed to by A to register B
 0x02 AB: Copy register A to location pointed to by register B
 0x03 0B <WORD>: Copy WORD to register B
+0x03 1B <WORD>: Copy word pointed to by WORD to register B
 ===Flow control===
-0x04 0B: Jump to location in register B
-0x04 1B: Add the signed value in register B to R15
-0x05 AA: Add the signed value AA to R15
-0x06 <WORD>: Jump to <WORD>
+0x04 AB: If register A == R0, jump to register B
+0x05 AB: If register A < R0, jump to register B
+0x06 AB: If register A > R0, jump to register B
+0x07 AB: If register A != R0, jump to register B
+0x08 AB <BYTE>: Decrement register A, if !=0, add signed register B to R15
+===Arithmetic===
+--Register--
+0x09 AB: Add register A to register B, store in B
+0x0A AB: Subtract register A from register B, store in B
+0x0B AB: Multiply register A by register B, store in B
+0x0C AB: Divide register B by register A, store in B
+--Immediate--
+0x0D 0A <WORD>: Add WORD to register A
+0x0D 1A <WORD>: Subtract WORD from register A
+0x0D 2A <WORD>: Multiply WORD by register A
+0x0D 3A <WORD>: Divide WORD by register A
+0x0E 0A: Increment register A
+0x0F 0A: Decrement register A
+===Stack===
+0x10 0A: Push register A
+0x10 1A: Pop into register A
+0x10 2A: Call register A
+0x10 30 <WORD>: Call WORD
+0x10 31: Return
+0x10 32 <WORD>: Push WORD
+===I/O===
+0x80 <BYTE>: Print ASCII BYTE
+0x81 0A: Print least significant byte of register A
+0x81 1A: Print null-terminated string at register A, length of string will be added to register A
+===Miscellaneous===
+0xF0: Halt execution, return R0 to OS
