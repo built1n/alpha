@@ -48,35 +48,31 @@ alpha_ctx* alpha_init(byte* mem, word sz, word stackSz, word sp)
 void alpha_print_state(alpha_ctx* ctx)
 {
   printf("====Status====\n");
-  printf("R0: 0x%08X\n", ctx->regs[0]);
-  printf("R1: 0x%08X\n", ctx->regs[1]);
-  printf("R2: 0x%08X\n", ctx->regs[2]);
-  printf("R3: 0x%08X\n", ctx->regs[3]);
   for(int i=0;i<16;++i)
     {
       printf("R%d: 0x%08X\n", i, ctx->regs[i]);
     }
   printf("Disassembly of instruction: ");
-  word pc=ctx->regs[3];
+  word pc=ctx->regs[PC];
   alpha_disasm(ctx);
   ctx->regs[3]=pc;
 }
 void alpha_exec(alpha_ctx* ctx)
 {
-  if(!ctx->done && ctx->regs[3]<ctx->memsize)
+  if(!ctx->done && ctx->regs[PC]<ctx->memsize)
     {
-      exec_opcode(ctx, readByte(ctx, ctx->regs[3]));
-      ++(ctx->regs[3]);
+      exec_opcode(ctx, readByte(ctx, ctx->regs[PC]));
+      ++(ctx->regs[PC]);
     }
   else
     ctx->done=true;
 }
 void alpha_disasm(alpha_ctx* ctx)
 {
-  if(!ctx->done && ctx->regs[3]<ctx->memsize)
+  if(!ctx->done && ctx->regs[PC]<ctx->memsize)
     {
-      disasm_opcode(ctx, readByte(ctx, ctx->regs[3]));
-      ++(ctx->regs[3]);
+      disasm_opcode(ctx, readByte(ctx, ctx->regs[PC]));
+      ++(ctx->regs[PC]);
     }
   else
     ctx->done=true;
