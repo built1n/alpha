@@ -35,9 +35,12 @@ alpha_ctx* alpha_init(byte* mem, word sz, word stackSz, word sp)
   ctx->memsize=sz;
   ctx->maxstacksize=stackSz;
   ctx->regs[0]=rand();
-  ctx->regs[1]=0;
-  ctx->regs[2]=sp;
-  ctx->regs[3]=0;
+  for(int i=1;i<SP;++i)
+    {
+      ctx->regs[i]=0;
+    }
+  ctx->regs[SP]=sp;
+  ctx->regs[PC]=0;
   ctx->done=false;
   ctx->return_value=EXIT_SUCCESS;
   return ctx;
@@ -49,6 +52,10 @@ void alpha_print_state(alpha_ctx* ctx)
   printf("R1: 0x%08X\n", ctx->regs[1]);
   printf("R2: 0x%08X\n", ctx->regs[2]);
   printf("R3: 0x%08X\n", ctx->regs[3]);
+  for(int i=0;i<16;++i)
+    {
+      printf("R%d: 0x%08X\n", i, ctx->regs[i]);
+    }
   printf("Disassembly of instruction: ");
   word pc=ctx->regs[3];
   alpha_disasm(ctx);
