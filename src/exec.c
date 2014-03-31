@@ -1,12 +1,15 @@
 #include <alpha.h>
 #include <util.h>
 #include <stdio.h>
+static void nop(alpha_ctx* ctx, byte operand)
+{
+}
 static inline word getArg(alpha_ctx* ctx)
 {
-  if(ctx->regs[3]<(ctx->memsize)-4)
+  if(ctx->regs[PC]+1<(ctx->memsize)-4)
     {
       register word ret;
-      register word pc = ctx->regs[PC];
+      register word pc = ctx->regs[PC]+1;
       ret=(ctx->memory[pc+1]<<24);
       ret|=(ctx->memory[pc+2]<<16);
       ret|=(ctx->memory[pc+3]<<8);
@@ -66,16 +69,32 @@ static inline void pushStack(alpha_ctx* ctx, word value)
   else
     badWrite(ctx);
 }
-
-static void nop(alpha_ctx* ctx, byte opcode)
+static void reg_to_reg(alpha_ctx* ctx, byte operand)
 {
-  return;
+  ctx->regs[operand&0xF]=ctx->regs[(opcode&0xF0)>>4];
 }
-void exec_opcode(alpha_ctx* ctx, byte opcode)
+static void mem_to_reg(alpha_ctx* ctx, byte operand)
 {
-  static void (*exec_table[16])(alpha_ctx*, byte)={ // table of handlers for first nibble in opcode 
-  &exec_0, &exec_1, &exec_2, &exec_3, &exec_4,
-  &exec_5, &exec_6, &exec_7, &exec_8, &exec_9,
-  &exec_A, &nop, &exec_extd, &exec_extd, &exec_extd/* 0xC, 0xD, and 0x0E are extd. instructions*/, &exec_F};
-  exec_table[(opcode&0xF0)>>4](ctx, opcode);
+  ctx->regs[operand&0xF]=readWord(ctx, ctx->regs[(operand&0xF0)]>>4);
+}
+static void reg_to_mem(alpha_ctx* ctx, byte operand)
+{
+  writeWord(ctx, ctx->regs[operand&0xF], ctx->regs[(operand&0xF0)>>4]);
+}
+static void load_imm(alpha_ctx* ctx, byte operand)
+{
+  ctx->regs[operand&0xF]=getArg(ctx);
+}
+static void jump_equ(alpha_ctx* ctx, byte operand)
+{
+  
+void exec_opcode(alpha_ctx* ctx, byte opcode, byte operand)
+{
+  static void (*exec_table[256])(alpha_ctx*, byte)={
+    &reg_to_reg, // 0x00
+    &mem_to_reg, // 0x01
+    &reg_to_mem, // 0x02
+    &load_imm, // 0x03
+    &jump_equ, // 0x04
+  exec_table[opcode](ctx, operand);
 }
