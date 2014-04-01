@@ -34,10 +34,15 @@ Instruction set:
 0x15 0A: Pop into register A
 0x16 0A: Call register A
 0x17 00 <WORD>: Call WORD
-0x18: Return
+0x18 00: Return
 ===I/O===
 0x19 <BYTE>: Print BYTE as ASCII
 0x1A 0A: Print least significant byte of register A as ASCII
 0x1B 0A: Print null-terminated string at register A, length of string will be added to register A
-0x1C 0A: Read an integer into register A
-0x1D 0A: Print register A as an unsigned integer
+0x1C 0A: Print register A as an unsigned integer in decimal
+0x1C 1A: Print register A in uppercase hexadecimal, no padding
+0x1C 2A: Print register A in uppercase padded hexadecimal
+0x1C 3A: Print register A in lowercase hexadecimal, no padding
+0x1C 4A: Print register A in lowercase padded hexadecimal
+0x1C 5A: Print register A as a signed integer in decimal
+0x1E <WORD>: Return WORD to the host OS
