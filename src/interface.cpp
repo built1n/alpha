@@ -26,6 +26,7 @@
 #include <cstdio>
 #include <csignal>
 #include <cstring>
+#include <help.h>
 using namespace std;
 char hex_chars[]={'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'};
 alpha_ctx* ctx;
@@ -44,6 +45,8 @@ void do_help(char* name)
   cerr << "  -c, --compile\t\t\tStore the hex input as raw binary in a.out" << endl;
   cerr << "  -d, --debug\t\t\tEnable debugging mode" << endl;
   cerr << "  -D, --disasm\t\t\tRun disassembler and exit" << endl;
+  cerr << "  -h, --help\t\t\tPrint this help and exit" << endl;
+  cerr << "  -H, --all-help\t\t\tPrint detailed help" << endl;
   cerr << "  -o <file>\t\t\tOutput compiled code to FILE instead of a.out" << endl;
   cerr << "      --stack-size=<size>\tSet stack size to SIZE instead of default " <<DEFAULT_STACK_SIZE<< endl;
 }
@@ -87,9 +90,14 @@ void parse_args(int argc, char* argv[])
 	{
 	  stacksize=atoi(arg.substr(strlen("--stack-size=")+1, -1).c_str());
 	}
-      else if(arg=="--help")
+      else if(arg=="--help" or arg=="-h")
 	{
 	  do_help(argv[0]);
+	  exit(1);
+	}
+      else if(arg=="-H" or arg=="--all-help")
+	{
+	  cerr<<help_string;
 	  exit(1);
 	}
       else if(arg=="-o")
