@@ -1,9 +1,8 @@
 SOURCES = exec.o alpha.o interface.o disasm.o
-SOURCES_DISASM = exec.o alpha.o interface-disasm.o disasm.o
-HEADERS = alpha.h util.h
+HEADERS = alpha.h util.h help.h
 CFLAGS = -O3 -I. -g -Wall -std=gnu99 -fomit-frame-pointer
 CXXFLAGS = -O3 -I. -g -Wall -fomit-frame-pointer
-alpha: $(SOURCES) $(HEADERS) Makefile
+alpha: $(HEADERS) $(SOURCES) Makefile
 	g++ $(SOURCES) $(CXXFLAGS) -o alpha 
 all: alpha alpha-disasm
 clean:
@@ -11,5 +10,11 @@ clean:
 	@rm -f alpha alpha-disasm
 	@rm -f *~
 	@rm -f a.out
+	@rm help.h
 library:
-	g++ $(SOURCES) -O3 -o libalpha.so.1.1.0 -shared
+	@echo "Compiling dynamic library..."
+	@g++ $(SOURCES) -O3 -o libalpha.so.1.1.0 -shared
+help.h: gen-help-string.cpp ../doc/SPEC
+	@echo "Auto-generating help..."
+	@g++ gen-help-string.cpp
+	@cat ../doc/SPEC | ./a.out > help.h
