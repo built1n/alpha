@@ -14,27 +14,27 @@ Instruction set:
 0x05 AB: If register A < R0, jump to register B
 0x06 AB: If register A > R0, jump to register B
 0x07 AB: If register A != R0, jump to register B
-0x08 AB <BYTE>: Decrement register A, if !=0, add signed register B to R15
+0x08 AB: Decrement register A, if !=0, add signed register B to R15
 ===Arithmetic===
---Register--
+--Register-Register--
 0x09 AB: Add register A to register B, store in B
 0x0A AB: Subtract register A from register B, store in B
 0x0B AB: Multiply register A by register B, store in B
 0x0C AB: Divide register B by register A, store in B
---Immediate--
+--Register-Immediate--
 0x0D 0A <WORD>: Add WORD to register A
-0x0D 1A <WORD>: Subtract WORD from register A
-0x0D 2A <WORD>: Multiply WORD by register A
-0x0D 3A <WORD>: Divide WORD by register A
-0x0E 0A: Increment register A
-0x0F 0A: Decrement register A
+0x0E 0A <WORD>: Subtract WORD from register A
+0x0F 0A <WORD>: Multiply WORD by register A
+0x10 0A <WORD>: Divide WORD by register A
+0x11 0A: Increment register A
+0x12 0A: Decrement register A
 ===Stack===
-0x10 0A: Push register A
-0x10 1A: Pop into register A
-0x10 2A: Call register A
-0x10 30 <WORD>: Call WORD
-0x10 31: Return
-0x10 32 <WORD>: Push WORD
+0x13 0A: Push register A
+0x14 <WORD>: Push WORD
+0x15 0A: Pop into register A
+0x16 0A: Call register A
+0x17 00 <WORD>: Call WORD
+0x18 01: Return
 ===I/O===
 0x80 <BYTE>: Print ASCII BYTE
 0x81 0A: Print least significant byte of register A
