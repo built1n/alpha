@@ -70,10 +70,9 @@ void alpha_exec(alpha_ctx* ctx)
 }
 void alpha_disasm(alpha_ctx* ctx)
 {
-  return; // not implemented yet!!!
-  if(!ctx->done && ctx->regs[PC]<ctx->memsize)
+  if(!ctx->done && ctx->regs[PC]+1<ctx->memsize)
     {
-      disasm_opcode(ctx, readByte(ctx, ctx->regs[PC]));
+      disasm_opcode(ctx, readByte(ctx, ctx->regs[PC]), readByte(ctx, ctx->regs[PC]+1));
       ctx->regs[PC]+=2;
     }
   else
