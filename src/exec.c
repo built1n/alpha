@@ -1,9 +1,7 @@
 #include <alpha.h>
 #include <util.h>
 #include <stdio.h>
-static void nop(alpha_ctx* ctx, byte operand)
-{
-}
+
 static inline word getArg(alpha_ctx* ctx)
 {
   if(ctx->regs[PC]+1<(ctx->memsize)-4)
@@ -72,7 +70,7 @@ static inline void pushStack(alpha_ctx* ctx, word value)
 }
 static void reg_to_reg(alpha_ctx* ctx, byte operand)
 {
-  ctx->regs[operand&0xF]=ctx->regs[(opcode&0xF0)>>4];
+  ctx->regs[operand&0xF]=ctx->regs[(operand&0xF0)>>4];
 }
 static void mem_to_reg(alpha_ctx* ctx, byte operand)
 {
@@ -119,7 +117,7 @@ static void djnz(alpha_ctx* ctx, byte operand)
   --ctx->regs[(operand&0xF0)>>4];
   if(ctx->regs[(operand&0xF0)>>4])
     {
-      int32_t jump=ctx->regs[opcode&0xF];
+      int32_t jump=ctx->regs[operand&0xF];
       ctx->regs[PC]+=jump;
       ctx->regs[PC]-=2; // size of this instruction
     }
@@ -181,12 +179,35 @@ static void push_reg(alpha_ctx* ctx, byte operand)
 }
 static void push_imm(alpha_ctx* ctx, byte operand)
 {
-  ctx->regs[PC]-=2; // BUG?
+  ctx->regs[PC]-=1; // BUG?
   pushStack(ctx, getArg(ctx));
 }
 static void pop(alpha_ctx* ctx, byte operand)
 {
   ctx->regs[operand&0xF]=popStack(ctx);
+}
+static void call_reg(alpha_ctx* ctx, byte operand)
+{
+  pushStack(ctx, ctx->regs[PC]);
+  ctx->regs[PC]=ctx->regs[operand&0xF]-2;
+}
+static void call_imm(alpha_ctx* ctx, byte operand)
+{
+  ctx->regs[PC]-=1;
+  ctx->regs[PC]=getArg(ctx);
+  ctx->regs[PC]-=4;
+}
+static void ret(alpha_ctx* ctx, byte operand)
+{
+  ctx->regs[PC]=popStack(ctx)-1; // one-byte instruction
+}
+static void alpha_putchar_imm(alpha_ctx* ctx, byte c)
+{
+  putchar(c);
+}
+static void alpha_putchar_reg(alpha_ctx* ctx, byte operand)
+{
+  putchar((ctx->regs[operand&0xF])&0xF);
 }
 void exec_opcode(alpha_ctx* ctx, byte opcode, byte operand)
 {
@@ -217,5 +238,14 @@ void exec_opcode(alpha_ctx* ctx, byte opcode, byte operand)
     &push_reg, // 0x13
     &push_imm, // 0x14
     &pop, // 0x15
-  exec_table[opcode](ctx, operand);
+    &call_reg, // 0x16
+    &call_imm, // 0x17
+    &ret, // 0x18
+
+    &alpha_putchar_imm, // 0x19
+    &alpha_putchar_reg, // 0x1A
+    // more!
+  };
+  printf("Executing...\n");
+    exec_table[opcode](ctx, operand);
 }
