@@ -247,7 +247,7 @@ static void halt_execution(alpha_ctx* ctx, byte operand)
 {
   --ctx->regs[PC];
   ctx->done=true;
-  ctx->return_value=getArg(ctx);
+  ctx->return_value=ctx->regs[operand&0xF];
 }
 void exec_opcode(alpha_ctx* ctx, byte opcode, byte operand)
 {
