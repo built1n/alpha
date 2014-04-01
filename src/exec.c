@@ -1,17 +1,16 @@
 #include <alpha.h>
 #include <util.h>
 #include <stdio.h>
-
 static inline word getArg(alpha_ctx* ctx)
 {
   if(ctx->regs[PC]+1<(ctx->memsize)-4)
     {
       register word ret;
       register word pc = ctx->regs[PC]+1;
-      ret=(ctx->memory[pc+1]<<24);
-      ret|=(ctx->memory[pc+2]<<16);
-      ret|=(ctx->memory[pc+3]<<8);
-      ret|=(ctx->memory[pc+4]);
+      ret=(ctx->memory[pc]<<24);
+      ret|=(ctx->memory[pc+1]<<16);
+      ret|=(ctx->memory[pc+2]<<8);
+      ret|=(ctx->memory[pc+3]);
       ctx->regs[PC]+=4;
       return ret;
     }
@@ -199,7 +198,7 @@ static void call_imm(alpha_ctx* ctx, byte operand)
 }
 static void ret(alpha_ctx* ctx, byte operand)
 {
-  ctx->regs[PC]=popStack(ctx)-1; // one-byte instruction
+  ctx->regs[PC]=popStack(ctx);
 }
 static void alpha_putchar_imm(alpha_ctx* ctx, byte c)
 {
@@ -208,6 +207,47 @@ static void alpha_putchar_imm(alpha_ctx* ctx, byte c)
 static void alpha_putchar_reg(alpha_ctx* ctx, byte operand)
 {
   putchar((ctx->regs[operand&0xF])&0xF);
+}
+static void puts_reg(alpha_ctx* ctx, byte operand)
+{
+  for(;readByte(ctx, ctx->regs[operand&0xF]);++ctx->regs[operand&0xF])
+    {
+      putchar(readByte(ctx, ctx->regs[operand&0xF]));
+    }
+}
+static void print_number(alpha_ctx* ctx, byte operand)
+{
+  byte reg_num=(operand&0xF);
+  switch((operand&0xF0)>>4)
+    {
+    case 0: // decimal
+      printf("%u", ctx->regs[reg_num]);
+      break;
+    case 1:
+      printf("%X", ctx->regs[reg_num]);
+      break;
+    case 2:
+      printf("%08X", ctx->regs[reg_num]);
+      break;
+    case 3:
+      printf("%x", ctx->regs[reg_num]);
+      break;
+    case 4:
+      printf("%08x", ctx->regs[reg_num]);
+      break;
+    case 5:
+      printf("%d", (int32_t)ctx->regs[reg_num]);
+      break;
+    default:
+      badInstr(ctx);
+      return;
+    }
+}
+static void halt_execution(alpha_ctx* ctx, byte operand)
+{
+  --ctx->regs[PC];
+  ctx->done=true;
+  ctx->return_value=getArg(ctx);
 }
 void exec_opcode(alpha_ctx* ctx, byte opcode, byte operand)
 {
@@ -244,8 +284,12 @@ void exec_opcode(alpha_ctx* ctx, byte opcode, byte operand)
 
     &alpha_putchar_imm, // 0x19
     &alpha_putchar_reg, // 0x1A
+    &puts_reg, // 0x1B
+    &print_number, // 0x1C
+    
+    &halt_execution // 0x1D
     // more!
   };
-  printf("Executing...\n");
+  if(exec_table[opcode])
     exec_table[opcode](ctx, operand);
 }
