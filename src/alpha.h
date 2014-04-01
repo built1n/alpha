@@ -43,8 +43,9 @@ extern "C" {
   void alpha_print_state(alpha_ctx*);
   void alpha_disasm(alpha_ctx*);
 
-#define ALPHA_OUT_OF_BOUNDS 0xFF
-#define ALPHA_BAD_INSTR 0xFF00
+#define ALPHA_OUT_OF_BOUNDS 0x020FB0D5
+#define ALPHA_BAD_INSTR 0xBADC0DE
+#define ALPHA_DIVIDE_BY_ZERO 0xDEADBEEF
 #ifdef __cplusplus
 }
 #endif
