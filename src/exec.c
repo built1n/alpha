@@ -14,6 +14,7 @@ static inline word getArg(alpha_ctx* ctx)
       ret|=(ctx->memory[pc+2]<<16);
       ret|=(ctx->memory[pc+3]<<8);
       ret|=(ctx->memory[pc+4]);
+      ctx->regs[PC]+=4;
       return ret;
     }
   else
@@ -87,7 +88,106 @@ static void load_imm(alpha_ctx* ctx, byte operand)
 }
 static void jump_equ(alpha_ctx* ctx, byte operand)
 {
-  
+  if(ctx->regs[(operand&0xF0)>>4]==ctx->regs[0])
+    {
+      ctx->regs[PC]=ctx->regs[operand&0xF]-2; // subtract the size of this instruction
+    }
+}
+static void jump_less(alpha_ctx* ctx, byte operand)
+{
+  if(ctx->regs[(operand&0xF0)>>4]<ctx->regs[0])
+    {
+      ctx->regs[PC]=ctx->regs[operand&0xF]-2; // subtract the size of this instruction
+    }
+}
+static void jump_greater(alpha_ctx* ctx, byte operand)
+{
+  if(ctx->regs[(operand&0xF0)>>4]>ctx->regs[0])
+    {
+      ctx->regs[PC]=ctx->regs[operand&0xF]-2; // subtract the size of this instruction
+    }
+}
+static void jump_noequ(alpha_ctx* ctx, byte operand)
+{
+  if(ctx->regs[(operand&0xF0)>>4]!=ctx->regs[0])
+    {
+      ctx->regs[PC]=ctx->regs[operand&0xF]-2; // subtract the size of this instruction
+    }
+}
+static void djnz(alpha_ctx* ctx, byte operand)
+{
+  --ctx->regs[(operand&0xF0)>>4];
+  if(ctx->regs[(operand&0xF0)>>4])
+    {
+      int32_t jump=ctx->regs[opcode&0xF];
+      ctx->regs[PC]+=jump;
+      ctx->regs[PC]-=2; // size of this instruction
+    }
+}
+static void add_reg(alpha_ctx* ctx, byte operand)
+{
+  ctx->regs[operand&0xF]+=ctx->regs[(operand&0xF0)>>4];
+}
+static void sub_reg(alpha_ctx* ctx, byte operand)
+{
+  ctx->regs[operand&0xF]-=ctx->regs[(operand&0xF0)>>4];
+}
+static void mul_reg(alpha_ctx* ctx, byte operand)
+{
+  ctx->regs[operand&0xF]*=ctx->regs[(operand&0xF0)>>4];
+}
+static void div_reg(alpha_ctx* ctx, byte operand)
+{
+  if(ctx->regs[(operand&0xF0)>>4]==0) // divide by zero!
+    {
+      divideByZero(ctx);
+      return;
+    }
+  ctx->regs[operand&0xF]/=ctx->regs[(operand&0xF0)>>4];
+}
+static void add_imm(alpha_ctx* ctx, byte operand)
+{
+  ctx->regs[operand&0xF]+=getArg(ctx);
+}
+static void sub_imm(alpha_ctx* ctx, byte operand)
+{
+  ctx->regs[operand&0xF]-=getArg(ctx);
+}
+static void mul_imm(alpha_ctx* ctx, byte operand)
+{
+  ctx->regs[operand&0xF]*=getArg(ctx);
+}
+static void div_imm(alpha_ctx* ctx, byte operand)
+{
+  word arg=getArg(ctx);
+  if(!arg)
+    {
+      divideByZero(ctx);
+      return;
+    }
+  ctx->regs[operand&0xF]/=getArg(ctx);
+}
+static void incr(alpha_ctx* ctx, byte operand)
+{
+  ++(ctx->regs[operand&0xF]);
+}
+static void decr(alpha_ctx* ctx, byte operand)
+{
+  --(ctx->regs[operand&0xF]);
+}
+static void push_reg(alpha_ctx* ctx, byte operand)
+{
+  pushStack(ctx,ctx->regs[operand&0xF]);
+}
+static void push_imm(alpha_ctx* ctx, byte operand)
+{
+  ctx->regs[PC]-=2; // BUG?
+  pushStack(ctx, getArg(ctx));
+}
+static void pop(alpha_ctx* ctx, byte operand)
+{
+  ctx->regs[operand&0xF]=popStack(ctx);
+}
 void exec_opcode(alpha_ctx* ctx, byte opcode, byte operand)
 {
   static void (*exec_table[256])(alpha_ctx*, byte)={
@@ -95,6 +195,27 @@ void exec_opcode(alpha_ctx* ctx, byte opcode, byte operand)
     &mem_to_reg, // 0x01
     &reg_to_mem, // 0x02
     &load_imm, // 0x03
+
     &jump_equ, // 0x04
+    &jump_less, // 0x05
+    &jump_greater, // 0x06
+    &jump_noequ, // 0x07
+    &djnz, // 0x08
+
+    &add_reg, // 0x09
+    &sub_reg, // 0x0A
+    &mul_reg, // 0x0B
+    &div_reg, // 0x0C
+
+    &add_imm, // 0x0D
+    &sub_imm, // 0x0E
+    &mul_imm, // 0x0F
+    &div_imm, // 0x10
+    &incr, // 0x11
+    &decr, // 0x12
+
+    &push_reg, // 0x13
+    &push_imm, // 0x14
+    &pop, // 0x15
   exec_table[opcode](ctx, operand);
 }
