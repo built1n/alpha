@@ -275,7 +275,7 @@ int main(int argc, char* argv[])
 	    }
 	}
     }
-
+  cin.clear();
   byte* p=(byte*)malloc(prog.size()+stacksize);
   for(unsigned int i=0;i<prog.size();++i)
     p[i]=prog[i];

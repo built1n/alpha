@@ -61,13 +61,13 @@ void alpha_print_state(alpha_ctx* ctx)
   printf("Disassembly of instruction: ");
   word pc=ctx->regs[PC];
   alpha_disasm(ctx);
-  ctx->regs[3]=pc;
+  ctx->regs[PC]=pc;
 }
 void alpha_exec(alpha_ctx* ctx)
 {
   if(!ctx->done && ctx->regs[PC]<ctx->memsize)
     {
-      exec_opcode(ctx, readByte(ctx, ctx->regs[PC]));
+      exec_opcode(ctx, readByte(ctx, ctx->regs[PC]), readByte(ctx, ctx->regs[PC]+1));
       ctx->regs[PC]+=2;
     }
   else
