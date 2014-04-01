@@ -20,6 +20,12 @@ void badInstr(alpha_ctx* ctx)
   ctx->done=true;
   ctx->return_value=ALPHA_BAD_INSTR;
 }
+void divideByZero(alpha_ctx* ctx)
+{
+  printf("Divide by zero.\n");
+  ctx->done=true;
+  ctx->return_value=ALPHA_DIVIDE_BY_ZERO;
+}
 byte readByte(alpha_ctx* ctx, word addr)
 {
   if(addr<ctx->memsize)
@@ -62,7 +68,7 @@ void alpha_exec(alpha_ctx* ctx)
   if(!ctx->done && ctx->regs[PC]<ctx->memsize)
     {
       exec_opcode(ctx, readByte(ctx, ctx->regs[PC]));
-      ++(ctx->regs[PC]);
+      ctx->regs[PC]+=2;
     }
   else
     ctx->done=true;
@@ -72,7 +78,7 @@ void alpha_disasm(alpha_ctx* ctx)
   if(!ctx->done && ctx->regs[PC]<ctx->memsize)
     {
       disasm_opcode(ctx, readByte(ctx, ctx->regs[PC]));
-      ++(ctx->regs[PC]);
+      ctx->regs[PC]+=2;
     }
   else
     ctx->done=true;
