@@ -1,4 +1,4 @@
-Revision 2
+Revision 3
 An Alpha virtual machine has 16 32-bit registers
 R0-R13: General-purpose
 R14: Stack pointer
@@ -22,28 +22,42 @@ Byte ordering is big-endian
 0x0A AB: Subtract register A from register B, store in B
 0x0B AB: Multiply register A by register B, store in B
 0x0C AB: Divide register B by register A, store in B
+0x0D AB: Modulo register B by register A, store in B
 --Register-Immediate--
-0x0D 0A <WORD>: Add WORD to register A
-0x0E 0A <WORD>: Subtract WORD from register A
-0x0F 0A <WORD>: Multiply WORD by register A
-0x10 0A <WORD>: Divide WORD by register A
-0x11 0A: Increment register A
-0x12 0A: Decrement register A
+0x0E 0A <WORD>: Add WORD to register A
+0x0F 0A <WORD>: Subtract WORD from register A
+0x10 0A <WORD>: Multiply WORD by register A
+0x11 0A <WORD>: Divide register A by WORD
+0x12 1A <WORD>: Modulo register A by WORD
+0x13 0A: Increment register A
+0x14 0A: Decrement register A
 ===Stack===
-0x13 0A: Push register A
-0x14 <WORD>: Push WORD
-0x15 0A: Pop into register A
-0x16 0A: Call register A
-0x17 <WORD>: Call WORD
-0x18 00: Return
+0x15 0A: Push register A
+0x16 <WORD>: Push WORD
+0x17 0A: Pop into register A
+0x18 0A: Call register A
+0x19 <WORD>: Call WORD
+0x1A 00: Return
 ===I/O===
-0x19 <BYTE>: Print BYTE as ASCII
-0x1A 0A: Print least significant byte of register A as ASCII
-0x1B 0A: Print null-terminated string at register A, length of string will be added to register A
-0x1C 0A: Print register A as an unsigned integer in decimal
-0x1C 1A: Print register A in uppercase hexadecimal, no padding
-0x1C 2A: Print register A in uppercase padded hexadecimal
-0x1C 3A: Print register A in lowercase hexadecimal, no padding
-0x1C 4A: Print register A in lowercase padded hexadecimal
-0x1C 5A: Print register A as a signed integer in decimal
-0x1D 0A: Return register A to the host OS
+0x1B <BYTE>: Print BYTE as ASCII
+0x1C 0A: Print least significant byte of register A as ASCII
+0x1D 0A: Print null-terminated string at register A, length of string will be added to register A
+0x1E 0A: Print register A as an unsigned integer in decimal
+0x1E 1A: Print register A in uppercase hexadecimal, no padding
+0x1E 2A: Print register A in uppercase padded hexadecimal
+0x1E 3A: Print register A in lowercase hexadecimal, no padding
+0x1E 4A: Print register A in lowercase padded hexadecimal
+0x1E 5A: Print register A as a signed integer in decimal
+0x1F 0A: Return register A to the host OS
+===Bitwise operations===
+0x20 AB: OR register A by register B, store in A
+0x21 AB: AND register A by register B, store in A
+0x22 AB: LSH register A by register B, store in A
+0x23 AB: RSH register A by register B, store in A
+0x24 AB: XOR register A by register B, store in A
+0x25 0A: NOT register A
+0x26 0A: ROTL register A
+0x27 0A: ROTR register A
+====Assembler Syntax====
+Instructions with two operands are INSTR DEST, SOURCE
+Constants are prefixed with a `$'
