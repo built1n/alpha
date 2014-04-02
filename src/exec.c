@@ -240,6 +240,18 @@ static void rotr(alpha_ctx* ctx, byte operand)
   ctx->regs[operand&0xF]>>=1;
   ctx->regs[operand&0xF]|=bit;
 }
+static void zero(alpha_ctx* ctx, byte operand)
+{
+  ctx->regs[operand&0xF]=0;
+}
+static void memsize(alpha_ctx* ctx, byte operand)
+{
+  ctx->regs[operand&0xF]=ctx->memsize;
+}
+static void nop(alpha_ctx* ctx, byte operand)
+{
+  --ctx->regs[PC]; // this is a one-byte instruction
+}
 void exec_opcode(alpha_ctx* ctx, byte opcode, byte operand)
 {
   static void (*exec_table[256])(alpha_ctx*, byte)={
@@ -288,7 +300,10 @@ void exec_opcode(alpha_ctx* ctx, byte opcode, byte operand)
     &xor, // 0x24
     &not, // 0x25
     &rotl, // 0x26
-    &rotr // 0x27
+    &rotr, // 0x27
+    &memsize, // 0x28
+    &zero, // 0x29
+    &nop // 0x2A
   };
   if(exec_table[opcode])
     exec_table[opcode](ctx, operand);

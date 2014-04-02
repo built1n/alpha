@@ -189,6 +189,19 @@ static void rotr(alpha_ctx* ctx, byte operand)
 {
   printf("ROTR R%d\n", operand&0xF);
 }
+static void zero(alpha_ctx* ctx, byte operand)
+{
+  printf("ZERO R%d\n", operand&0xF);
+}
+static void memsize(alpha_ctx* ctx, byte operand)
+{
+  printf("GETMEMSZ R%d\n", operand&0xF);
+}
+static void nop(alpha_ctx* ctx, byte operand)
+{
+  printf("NOP\n");
+  --ctx->regs[PC];
+}
 void disasm_opcode(alpha_ctx* ctx, byte opcode, byte operand)
 {
   static void (*exec_table[256])(alpha_ctx*, byte)={
@@ -237,7 +250,10 @@ void disasm_opcode(alpha_ctx* ctx, byte opcode, byte operand)
     &xor, // 0x24
     &not, // 0x25
     &rotl, // 0x26
-    &rotr // 0x27
+    &rotr, // 0x27
+    &memsize, // 0x28
+    &zero, // 0x29
+    &nop // 0x2A
   };
   if(exec_table[opcode])
     exec_table[opcode](ctx, operand);

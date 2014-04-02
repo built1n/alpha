@@ -1,4 +1,4 @@
-Revision 3
+Revision 4
 An Alpha virtual machine has 16 32-bit registers
 R0-R13: General-purpose
 R14: Stack pointer
@@ -58,6 +58,10 @@ Byte ordering is big-endian
 0x25 0A: NOT register A
 0x26 0A: ROTL register A
 0x27 0A: ROTR register A
+===Miscellaneous===
+0x28 0A: Store the amount of availible memory in register A
+0x29 0A: Zero register A
+0x2A: 	 Do nothing
 ====Assembler Syntax====
 Instructions with two operands are INSTR DEST, SOURCE
 Constants are prefixed with a `$'
