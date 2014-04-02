@@ -1,6 +1,7 @@
 #ifndef ALPHA_MEMORY_H_
 #define ALPHA_MEMORY_H_
 #include <alpha.h>
+#include <stdio.h>
 static inline word getArg(alpha_ctx* ctx)
 {
   if(ctx->regs[PC]+2<(ctx->memsize)-4)
@@ -46,26 +47,26 @@ static inline word readWord(alpha_ctx* ctx, word addr)
 }
 static inline word popStack(alpha_ctx* ctx)
 {
-  if(ctx->stacksize>=4)
+  if(ctx->regs[SP]>=4)
     {
       register word ret=readWord(ctx, ctx->regs[SP]-4);
       ctx->regs[SP]-=4;
       return ret;
     }
   else
-    badRead(ctx);
+    stackUnderflow(ctx);
   return 0xDEADBEEF;
 }
 static inline void pushStack(alpha_ctx* ctx, word value)
 {
-  if(ctx->stacksize<ctx->maxstacksize-4)
+  if(ctx->regs[SP]<ctx->memsize-3)
     {
+      printf("Pushing value...\n");
       writeWord(ctx, ctx->regs[SP], value);
       ctx->regs[SP]+=4;
-      ctx->stacksize+=4;
     }
   else
-    badWrite(ctx);
+    stackOverflow(ctx);
 }
 
 #endif

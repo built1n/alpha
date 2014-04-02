@@ -27,8 +27,7 @@ typedef uint32_t word;
 
 typedef struct alpha_ctx {
   byte* memory;
-  word memsize, maxstacksize;
-  word stacksize;
+  word memsize;
   word regs[16];
   bool done;
   int return_value;
@@ -38,7 +37,7 @@ typedef struct alpha_ctx {
 extern "C" {
 #endif
 
-  alpha_ctx* alpha_init(byte* memory, word memsize, word maxstacksize, word sp);
+  alpha_ctx* alpha_init(byte* memory, word memsize, word sp);
   void alpha_exec(alpha_ctx*);
   void alpha_print_state(alpha_ctx*);
   void alpha_disasm(alpha_ctx*);
@@ -46,6 +45,8 @@ extern "C" {
 #define ALPHA_OUT_OF_BOUNDS 0x020FB0D5
 #define ALPHA_BAD_INSTR 0xBADC0DE
 #define ALPHA_DIVIDE_BY_ZERO 0xDEADBEEF
+#define ALPHA_STACK_OVERFLOW 0x52AC2B16
+#define ALPHA_STACK_UNDERFLOW 0x2242001
 #ifdef __cplusplus
 }
 #endif

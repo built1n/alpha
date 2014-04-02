@@ -34,13 +34,23 @@ byte readByte(alpha_ctx* ctx, word addr)
     badRead(ctx);
   return 0;
 }
-alpha_ctx* alpha_init(byte* mem, word sz, word stackSz, word sp)
+void stackOverflow(alpha_ctx* ctx)
+{
+  printf("Stack overflow.\n");
+  ctx->done=true;
+  ctx->return_value=ALPHA_STACK_OVERFLOW;
+}
+void stackUnderflow(alpha_ctx* ctx)
+{
+  printf("Stack underflow.\n");
+  ctx->done=true;
+  ctx->return_value=ALPHA_STACK_UNDERFLOW;
+}
+alpha_ctx* alpha_init(byte* mem, word sz, word sp)
 {
   alpha_ctx* ctx=malloc(sizeof(alpha_ctx));
   ctx->memory=mem;
   ctx->memsize=sz;
-  ctx->maxstacksize=stackSz;
-  ctx->stacksize=0;
   for(int i=0;i<SP;++i)
     {
       ctx->regs[i]=0;

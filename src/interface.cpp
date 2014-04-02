@@ -295,7 +295,6 @@ int main(int argc, char* argv[])
     signal(SIGINT, &ctrlc);
   ctx=alpha_init((byte*)p, // memory
 		 prog.size()+stacksize, // mem size
-		 stacksize, // stack size
 		 prog.size()); // initial stack pointer
   if(interactive && !disasm && !compile)
     cout << endl << "Beginning execution..." << endl;
