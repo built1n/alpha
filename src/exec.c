@@ -48,7 +48,7 @@ static inline word popStack(alpha_ctx* ctx)
 {
   if(ctx->stacksize>=4)
     {
-      register word ret=readWord(ctx, ctx->regs[SP]);
+      register word ret=readWord(ctx, ctx->regs[SP]-4);
       ctx->regs[SP]-=4;
       return ret;
     }
