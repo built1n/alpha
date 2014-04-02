@@ -40,6 +40,7 @@ alpha_ctx* alpha_init(byte* mem, word sz, word stackSz, word sp)
   ctx->memory=mem;
   ctx->memsize=sz;
   ctx->maxstacksize=stackSz;
+  ctx->stacksize=0;
   for(int i=0;i<SP;++i)
     {
       ctx->regs[i]=0;
@@ -57,6 +58,7 @@ void alpha_print_state(alpha_ctx* ctx)
     {
       printf("R%d: 0x%08X\n", i, ctx->regs[i]);
     }
+  printf("Available memory: %u bytes\n", ctx->memsize);
   printf("Disassembly of instruction: ");
   word oldpc=ctx->regs[PC];
   alpha_disasm(ctx);
