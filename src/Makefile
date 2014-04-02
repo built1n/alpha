@@ -2,8 +2,10 @@ SOURCES = exec.o alpha.o interface.o disasm.o
 HEADERS = alpha.h util.h help.h memory.h
 CFLAGS = -O3 -I. -g -Wall -std=gnu99 -fomit-frame-pointer
 CXXFLAGS = -O3 -I. -g -Wall -fomit-frame-pointer
+CC=gcc
+CXX=g++
 alpha: $(HEADERS) $(SOURCES) Makefile
-	g++ $(SOURCES) $(CXXFLAGS) -o alpha 
+	$(CXX) $(SOURCES) $(CXXFLAGS) -o alpha 
 all: alpha alpha-disasm
 clean:
 	@rm -rf *.o
