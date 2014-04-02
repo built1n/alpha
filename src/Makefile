@@ -11,9 +11,6 @@ clean:
 	@rm -f *~
 	@rm -f a.out
 	@rm help.h
-library:
-	@echo "Compiling dynamic library..."
-	@g++ $(SOURCES) -O3 -o libalpha.so.1.1.0 -shared
 help.h: gen-help-string.cpp ../doc/SPEC
 	@echo "Auto-generating help..."
 	@g++ gen-help-string.cpp
