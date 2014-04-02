@@ -223,6 +223,10 @@ int main(int argc, char* argv[])
 {
   parse_args(argc, argv);
   vector<byte> prog;
+  if(interactive)
+    {
+      cerr << help_string << endl;
+    }
   while(in->good())
     {
       if(ascii)
