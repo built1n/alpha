@@ -77,6 +77,15 @@ static void div_reg(alpha_ctx* ctx, byte operand)
     }
   ctx->regs[operand&0xF]/=ctx->regs[(operand&0xF0)>>4];
 }
+static void mod_reg(alpha_ctx* ctx, byte operand)
+{
+  if(ctx->regs[(operand&0xF0)>>4]==0) // divide by zero!
+    {
+      divideByZero(ctx);
+      return;
+    }
+  ctx->regs[operand&0xF]%=ctx->regs[(operand&0xF0)>>4];
+}
 static void add_imm(alpha_ctx* ctx, byte operand)
 {
   ctx->regs[operand&0xF]+=getArg(ctx);
@@ -98,6 +107,16 @@ static void div_imm(alpha_ctx* ctx, byte operand)
       return;
     }
   ctx->regs[operand&0xF]/=getArg(ctx);
+}
+static void mod_imm(alpha_ctx* ctx, byte operand)
+{
+  word arg=getArg(ctx);
+  if(!arg)
+    {
+      divideByZero(ctx);
+      return;
+    }
+  ctx->regs[operand&0xF]%=getArg(ctx);
 }
 static void incr(alpha_ctx* ctx, byte operand)
 {
@@ -185,6 +204,42 @@ static void halt_execution(alpha_ctx* ctx, byte operand)
   ctx->done=true;
   ctx->return_value=ctx->regs[operand&0xF];
 }
+static void or(alpha_ctx* ctx, byte operand)
+{
+  ctx->regs[(operand&0xF0)>>4]|=ctx->regs[operand&0xF];
+}
+static void and(alpha_ctx* ctx, byte operand)
+{
+  ctx->regs[(operand&0xF0)>>4]&=ctx->regs[operand&0xF];
+}
+static void lsh(alpha_ctx* ctx, byte operand)
+{
+  ctx->regs[(operand&0xF0)>>4]<<=ctx->regs[operand&0xF];
+}
+static void rsh(alpha_ctx* ctx, byte operand)
+{
+  ctx->regs[(operand&0xF0)>>4]>>=ctx->regs[operand&0xF];
+}
+static void xor(alpha_ctx* ctx, byte operand)
+{
+  ctx->regs[(operand&0xF0)>>4]^=ctx->regs[operand&0xF];
+}
+static void not(alpha_ctx* ctx, byte operand)
+{
+  ctx->regs[operand&0xF]=~(ctx->regs[operand&0xF]);
+}
+static void rotl(alpha_ctx* ctx, byte operand)
+{
+  word bit=(ctx->regs[operand&0xF]&0x80000000)>>31;
+  ctx->regs[operand&0xF]<<=1;
+  ctx->regs[operand&0xF]|=bit;
+}
+static void rotr(alpha_ctx* ctx, byte operand)
+{
+  word bit=(ctx->regs[operand&0xF]&0x1)<<31;
+  ctx->regs[operand&0xF]>>=1;
+  ctx->regs[operand&0xF]|=bit;
+}
 void exec_opcode(alpha_ctx* ctx, byte opcode, byte operand)
 {
   static void (*exec_table[256])(alpha_ctx*, byte)={
@@ -203,27 +258,37 @@ void exec_opcode(alpha_ctx* ctx, byte opcode, byte operand)
     &sub_reg, // 0x0A
     &mul_reg, // 0x0B
     &div_reg, // 0x0C
+    &mod_reg, // 0x0D
 
-    &add_imm, // 0x0D
-    &sub_imm, // 0x0E
-    &mul_imm, // 0x0F
-    &div_imm, // 0x10
-    &incr, // 0x11
-    &decr, // 0x12
+    &add_imm, // 0x0E
+    &sub_imm, // 0x0F
+    &mul_imm, // 0x10
+    &div_imm, // 0x11
+    &mod_imm, // 0x12
+    &incr, // 0x13
+    &decr, // 0x14
 
-    &push_reg, // 0x13
-    &push_imm, // 0x14
-    &pop, // 0x15
-    &call_reg, // 0x16
-    &call_imm, // 0x17
-    &ret, // 0x18
+    &push_reg, // 0x15
+    &push_imm, // 0x16
+    &pop, // 0x17
+    &call_reg, // 0x18
+    &call_imm, // 0x19
+    &ret, // 0x1A
 
-    &alpha_putchar_imm, // 0x19
-    &alpha_putchar_reg, // 0x1A
-    &puts_reg, // 0x1B
-    &print_number, // 0x1C
+    &alpha_putchar_imm, // 0x1B
+    &alpha_putchar_reg, // 0x1C
+    &puts_reg, // 0x1D
+    &print_number, // 0x1E
     
-    &halt_execution // 0x1D
+    &halt_execution, // 0x1F
+    &or, // 0x20
+    &and, // 0x21
+    &lsh, // 0x22
+    &rsh, // 0x23
+    &xor, // 0x24
+    &not, // 0x25
+    &rotl, // 0x26
+    &rotr // 0x27
   };
   if(exec_table[opcode])
     exec_table[opcode](ctx, operand);
