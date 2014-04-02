@@ -78,7 +78,6 @@ static inline void pushStack(alpha_ctx* ctx, word value)
 {
   if(ctx->regs[SP]<ctx->memsize-3)
     {
-      printf("Pushing value...\n");
       writeWord(ctx, ctx->regs[SP], value);
       ctx->regs[SP]+=4;
     }
