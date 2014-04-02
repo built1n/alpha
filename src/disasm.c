@@ -1,3 +1,20 @@
+/*
+ *  Alpha emulation library
+ *  Copyright (C) 2014 Franklin Wei
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 #include <alpha.h>
 #include <util.h>
 #include <stdio.h>
@@ -202,6 +219,10 @@ static void nop(alpha_ctx* ctx, byte operand)
   printf("NOP\n");
   --ctx->regs[PC];
 }
+static void reqcheck(alpha_ctx* ctx, byte operand)
+{
+  printf("REQUIRES %d\n", operand);
+} 
 void disasm_opcode(alpha_ctx* ctx, byte opcode, byte operand)
 {
   static void (*exec_table[256])(alpha_ctx*, byte)={
@@ -253,7 +274,8 @@ void disasm_opcode(alpha_ctx* ctx, byte opcode, byte operand)
     &rotr, // 0x27
     &memsize, // 0x28
     &zero, // 0x29
-    &nop // 0x2A
+    &nop, // 0x2A
+    &reqcheck // 0x2B
   };
   if(exec_table[opcode])
     exec_table[opcode](ctx, operand);
