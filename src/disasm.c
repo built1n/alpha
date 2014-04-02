@@ -54,6 +54,10 @@ static void div_reg(alpha_ctx* ctx, byte operand)
 {
   printf("DIV R%d, R%d\n", operand&0xF, (operand&0xF0)>>4);
 }
+static void mod_reg(alpha_ctx* ctx, byte operand)
+{
+  printf("MOD R%d, R%d\n", operand&0xF, (operand&0xF0)>>4);
+}
 static void add_imm(alpha_ctx* ctx, byte operand)
 {
   printf("ADD R%d, $0x%08X\n", operand&0xF, getArg(ctx));
@@ -69,6 +73,10 @@ static void mul_imm(alpha_ctx* ctx, byte operand)
 static void div_imm(alpha_ctx* ctx, byte operand)
 {
   printf("DIV R%d, $0x%08X\n", operand&0xF, getArg(ctx));
+}
+static void mod_imm(alpha_ctx* ctx, byte operand)
+{
+  printf("MOD R%d, $0x%08X\n", operand&0xF, getArg(ctx));
 }
 static void incr(alpha_ctx* ctx, byte operand)
 {
@@ -147,7 +155,39 @@ static void print_number(alpha_ctx* ctx, byte operand)
 }
 static void halt_execution(alpha_ctx* ctx, byte operand)
 {
-  printf("HLT R%d\n", ctx->regs[operand&0xF]);
+  printf("HLT R%d\n", operand&0xF);
+}
+static void or(alpha_ctx* ctx, byte operand)
+{
+  printf("OR R%d, R%d\n", (operand&0xF0)>>4, operand&0xF);
+}
+static void and(alpha_ctx* ctx, byte operand)
+{
+  printf("AND R%d, R%d\n", (operand&0xF0)>>4, operand&0xF);
+}
+static void lsh(alpha_ctx* ctx, byte operand)
+{
+  printf("LSH R%d, R%d\n", (operand&0xF0)>>4, operand&0xF);
+}
+static void rsh(alpha_ctx* ctx, byte operand)
+{
+  printf("RSH R%d, R%d\n", (operand&0xF0)>>4, operand&0xF);
+}
+static void xor(alpha_ctx* ctx, byte operand)
+{
+  printf("XOR R%d, R%d\n", (operand&0xF0)>>4, operand&0xF);
+}
+static void not(alpha_ctx* ctx, byte operand)
+{
+  printf("NOT R%d\n", operand&0xF);
+}
+static void rotl(alpha_ctx* ctx, byte operand)
+{
+  printf("ROTL R%d\n", operand&0xF);
+}
+static void rotr(alpha_ctx* ctx, byte operand)
+{
+  printf("ROTR R%d\n", operand&0xF);
 }
 void disasm_opcode(alpha_ctx* ctx, byte opcode, byte operand)
 {
@@ -167,29 +207,44 @@ void disasm_opcode(alpha_ctx* ctx, byte opcode, byte operand)
     &sub_reg, // 0x0A
     &mul_reg, // 0x0B
     &div_reg, // 0x0C
+    &mod_reg, // 0x0D
 
-    &add_imm, // 0x0D
-    &sub_imm, // 0x0E
-    &mul_imm, // 0x0F
-    &div_imm, // 0x10
-    &incr, // 0x11
-    &decr, // 0x12
+    &add_imm, // 0x0E
+    &sub_imm, // 0x0F
+    &mul_imm, // 0x10
+    &div_imm, // 0x11
+    &mod_imm, // 0x12
+    &incr, // 0x13
+    &decr, // 0x14
 
-    &push_reg, // 0x13
-    &push_imm, // 0x14
-    &pop, // 0x15
-    &call_reg, // 0x16
-    &call_imm, // 0x17
-    &ret, // 0x18
+    &push_reg, // 0x15
+    &push_imm, // 0x16
+    &pop, // 0x17
+    &call_reg, // 0x18
+    &call_imm, // 0x19
+    &ret, // 0x1A
 
-    &alpha_putchar_imm, // 0x19
-    &alpha_putchar_reg, // 0x1A
-    &puts_reg, // 0x1B
-    &print_number, // 0x1C
+    &alpha_putchar_imm, // 0x1B
+    &alpha_putchar_reg, // 0x1C
+    &puts_reg, // 0x1D
+    &print_number, // 0x1E
     
-    &halt_execution // 0x1D
-    // more!
+    &halt_execution, // 0x1F
+    &or, // 0x20
+    &and, // 0x21
+    &lsh, // 0x22
+    &rsh, // 0x23
+    &xor, // 0x24
+    &not, // 0x25
+    &rotl, // 0x26
+    &rotr // 0x27
   };
   if(exec_table[opcode])
     exec_table[opcode](ctx, operand);
+  else
+    {
+      printf("DATA $0x%02X\n", opcode);
+      printf("0x%08X: ", ctx->regs[PC]+1);
+      printf("DATA $0x%02X\n", operand);
+    }
 }
