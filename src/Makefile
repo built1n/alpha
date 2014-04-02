@@ -1,5 +1,5 @@
 SOURCES = exec.o alpha.o interface.o disasm.o
-HEADERS = alpha.h util.h help.h
+HEADERS = alpha.h util.h help.h memory.h
 CFLAGS = -O3 -I. -g -Wall -std=gnu99 -fomit-frame-pointer
 CXXFLAGS = -O3 -I. -g -Wall -fomit-frame-pointer
 alpha: $(HEADERS) $(SOURCES) Makefile
@@ -18,4 +18,5 @@ help.h: gen-help-string.cpp ../doc/SPEC
 	@echo "Auto-generating help..."
 	@g++ gen-help-string.cpp
 	@cat ../doc/SPEC | ./a.out > help.h
+	@rm a.out
 	@echo "Done."
