@@ -3,10 +3,10 @@
 #include <stdio.h>
 static inline word getArg(alpha_ctx* ctx)
 {
-  if(ctx->regs[PC]+1<(ctx->memsize)-4)
+  if(ctx->regs[PC]+2<(ctx->memsize)-4)
     {
       register word ret;
-      register word pc = ctx->regs[PC]+1;
+      register word pc = ctx->regs[PC]+2;
       ret=(ctx->memory[pc]<<24);
       ret|=(ctx->memory[pc+1]<<16);
       ret|=(ctx->memory[pc+2]<<8);
@@ -206,7 +206,7 @@ static void alpha_putchar_imm(alpha_ctx* ctx, byte c)
 }
 static void alpha_putchar_reg(alpha_ctx* ctx, byte operand)
 {
-  putchar((ctx->regs[operand&0xF])&0xF);
+  putchar((ctx->regs[operand&0xF])&0xFF);
 }
 static void puts_reg(alpha_ctx* ctx, byte operand)
 {
@@ -288,7 +288,6 @@ void exec_opcode(alpha_ctx* ctx, byte opcode, byte operand)
     &print_number, // 0x1C
     
     &halt_execution // 0x1D
-    // more!
   };
   if(exec_table[opcode])
     exec_table[opcode](ctx, operand);
