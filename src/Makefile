@@ -18,3 +18,4 @@ help.h: gen-help-string.cpp ../doc/SPEC
 	@echo "Auto-generating help..."
 	@g++ gen-help-string.cpp
 	@cat ../doc/SPEC | ./a.out > help.h
+	@echo "Done."
