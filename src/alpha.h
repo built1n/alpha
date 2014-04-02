@@ -21,7 +21,7 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <stdbool.h>
-
+#define ALPHA_IMPLEMENTED_REVISION 5
 typedef uint8_t byte;
 typedef uint32_t word;
 
@@ -46,7 +46,8 @@ extern "C" {
 #define ALPHA_BAD_INSTR 0xBADC0DE
 #define ALPHA_DIVIDE_BY_ZERO 0xDEADBEEF
 #define ALPHA_STACK_OVERFLOW 0x52AC2B16
-#define ALPHA_STACK_UNDERFLOW 0x2242001
+#define ALPHA_STACK_UNDERFLOW 0x02242001
+#define ALPHA_TOO_OLD 0x201D
 #ifdef __cplusplus
 }
 #endif
