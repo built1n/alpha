@@ -97,7 +97,7 @@ void parse_args(int argc, char* argv[])
 	}
       else if(arg=="-H" or arg=="--all-help")
 	{
-	  cerr<<help_string;
+	  cout<<help_string;
 	  exit(1);
 	}
       else if(arg=="-o")
