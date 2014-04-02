@@ -1,4 +1,4 @@
-Revision 1
+Revision 2
 An Alpha virtual machine has 16 32-bit registers
 R0-R13: General-purpose
 R14: Stack pointer
@@ -34,7 +34,7 @@ Byte ordering is big-endian
 0x14 <WORD>: Push WORD
 0x15 0A: Pop into register A
 0x16 0A: Call register A
-0x17 00 <WORD>: Call WORD
+0x17 <WORD>: Call WORD
 0x18 00: Return
 ===I/O===
 0x19 <BYTE>: Print BYTE as ASCII
