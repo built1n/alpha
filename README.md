@@ -1,4 +1,4 @@
-alpha
+Alpha
 =====
 
-RISC virtual machine with a rather large instruction set.
+RISC virtual machine emulator with a rather small instruction set.
