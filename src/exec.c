@@ -127,9 +127,10 @@ static void call_reg(alpha_ctx* ctx, byte operand)
 }
 static void call_imm(alpha_ctx* ctx, byte operand)
 {
+  pushStack(ctx, ctx->regs[PC]);
   ctx->regs[PC]-=1;
   ctx->regs[PC]=getArg(ctx);
-  ctx->regs[PC]-=4;
+  ctx->regs[PC]-=2;
 }
 static void ret(alpha_ctx* ctx, byte operand)
 {
