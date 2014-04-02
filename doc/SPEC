@@ -1,9 +1,10 @@
+Revision 1
 An Alpha virtual machine has 16 32-bit registers
 R0-R13: General-purpose
 R14: Stack pointer
 R15: Program counter
 Byte ordering is big-endian
-Instruction set:
+=====Instruction set=====
 ===Memory===
 0x00 AB: Copy register A to register B
 0x01 AB: Copy word pointed to by A to register B
@@ -45,4 +46,4 @@ Instruction set:
 0x1C 3A: Print register A in lowercase hexadecimal, no padding
 0x1C 4A: Print register A in lowercase padded hexadecimal
 0x1C 5A: Print register A as a signed integer in decimal
-0x1E 0A: Return register A to the host OS
+0x1D 0A: Return register A to the host OS
