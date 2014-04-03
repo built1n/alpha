@@ -1,4 +1,4 @@
-Revision 5
+Revision 6
 An Alpha virtual machine has 16 32-bit registers
 R0-R13: General-purpose
 R14: Stack pointer
@@ -62,7 +62,7 @@ Byte ordering is big-endian
 0x28 0A: Store the amount of availible memory in register A
 0x29 0A: Zero register A
 0x2A: 	 Do nothing
-0x2B <BYTE>: Require revision BYTE or greater
+0x2B 0A: Store the implemented revision into register A
 ====Assembler Syntax====
 Instructions with two operands are INSTR DEST, SOURCE
 Constants are prefixed with a `$'

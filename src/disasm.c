@@ -226,7 +226,7 @@ static void nop(alpha_ctx* ctx, byte operand)
 }
 static void reqcheck(alpha_ctx* ctx, byte operand)
 {
-  printf("REQUIRES %d\n", operand);
+  printf("GETREV R%d\n", operand&0xF);
 } 
 void disasm_opcode(alpha_ctx* ctx, byte opcode, byte operand)
 {

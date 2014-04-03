@@ -272,12 +272,7 @@ static void nop(alpha_ctx* ctx, byte operand)
 }
 static void reqcheck(alpha_ctx* ctx, byte operand)
 {
-  if(ALPHA_IMPLEMENTED_REVISION<operand) // this is too old
-    {
-      printf("Error: Revision %d or greater is required.\nCurrent revision: %d\n", operand, ALPHA_IMPLEMENTED_REVISION);
-      ctx->done=true;
-      ctx->return_value=ALPHA_TOO_OLD;
-    }
+  ctx->regs[operand&0xF]=ALPHA_IMPLEMENTED_REVISION;
 }
 void exec_opcode(alpha_ctx* ctx, byte opcode, byte operand)
 {
