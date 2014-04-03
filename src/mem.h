@@ -17,8 +17,10 @@
  */
 #ifndef ALPHA_MEMORY_H_
 #define ALPHA_MEMORY_H_
-#include <alpha.h>
 #include <stdio.h>
+
+#include <alpha.h>
+#include <util.h>
 static inline word getArg(alpha_ctx* ctx)
 {
   if(ctx->regs[PC]+2<(ctx->memsize)-4)

@@ -18,7 +18,7 @@
 #include <alpha.h>
 #include <util.h>
 #include <stdio.h>
-#include <memory.h>
+#include <mem.h>
 static void reg_to_reg(alpha_ctx* ctx, byte operand)
 {
   ctx->regs[operand&0xF]=ctx->regs[(operand&0xF0)>>4];
