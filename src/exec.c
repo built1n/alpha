@@ -15,10 +15,11 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include <alpha.h>
-#include <util.h>
 #include <stdio.h>
+
+#include <alpha.h>
 #include <mem.h>
+#include <util.h>
 static void reg_to_reg(alpha_ctx* ctx, byte operand)
 {
   ctx->regs[operand&0xF]=ctx->regs[(operand&0xF0)>>4];

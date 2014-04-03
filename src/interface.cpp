@@ -18,7 +18,6 @@
 #define DEFAULT_STACK_SIZE 2048
 #include <fstream>
 #include <iostream>
-#include <alpha.h>
 #include <string>
 #include <cstdlib>
 #include <vector>
@@ -26,7 +25,10 @@
 #include <cstdio>
 #include <csignal>
 #include <cstring>
+
+#include <alpha.h>
 #include <help.h>
+
 using namespace std;
 char hex_chars[]={'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'};
 alpha_ctx* ctx;
