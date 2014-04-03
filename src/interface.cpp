@@ -32,7 +32,7 @@
 using namespace std;
 char hex_chars[]={'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'};
 alpha_ctx* ctx;
-bool disasm=false, debugger=false;
+bool disasm=false, debugger=false, quiet=false;
 word stacksize=DEFAULT_STACK_SIZE;
 istream *in=&cin;
 bool interactive=true;
@@ -48,8 +48,9 @@ void do_help(char* name)
   cerr << "  -d, --debug\t\t\tEnable debugging mode" << endl;
   cerr << "  -D, --disasm\t\t\tRun disassembler and exit" << endl;
   cerr << "  -h, --help\t\t\tPrint this help and exit" << endl;
-  cerr << "  -H, --all-help\t\t\tPrint detailed help" << endl;
+  cerr << "  -H, --all-help\t\tPrint detailed help" << endl;
   cerr << "  -o <file>\t\t\tOutput compiled code to FILE instead of a.out" << endl;
+  cerr << "  -q, --quiet\t\t\tDon't print help text in interactive mode" << endl;
   cerr << "      --stack-size=<size>\tSet stack size to SIZE instead of default " <<DEFAULT_STACK_SIZE<< endl;
 }
 void parse_args(int argc, char* argv[])
@@ -96,6 +97,10 @@ void parse_args(int argc, char* argv[])
 	{
 	  do_help(argv[0]);
 	  exit(1);
+	}
+      else if(arg=="--quiet" or arg=="-q")
+	{
+	  quiet=true;
 	}
       else if(arg=="-H" or arg=="--all-help")
 	{
@@ -225,7 +230,7 @@ int main(int argc, char* argv[])
 {
   parse_args(argc, argv);
   vector<byte> prog;
-  if(interactive)
+  if(interactive and !quiet)
     {
       cerr << help_string << endl;
     }
@@ -298,7 +303,7 @@ int main(int argc, char* argv[])
   ctx=alpha_init((byte*)p, // memory
 		 prog.size()+stacksize, // mem size
 		 prog.size()); // initial stack pointer
-  if(interactive && !disasm && !compile)
+  if(interactive && !disasm && !compile and !quiet)
     cout << endl << "Beginning execution..." << endl;
   if(compile)
     {
