@@ -9,10 +9,10 @@ alpha: $(HEADERS) $(SOURCES) Makefile
 all: alpha alpha-disasm
 clean:
 	@rm -rf *.o
-	@rm -f alpha alpha-disasm
+	@rm -f alpha
 	@rm -f *~
 	@rm -f a.out
-	@rm help.h
+	@rm -f help.h
 help.h: gen-help-string.cpp ../doc/SPEC
 	@echo "Auto-generating help..."
 	@g++ gen-help-string.cpp
