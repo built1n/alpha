@@ -15,10 +15,12 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include <alpha.h>
-#include <util.h>
+#include <ctype.h>
 #include <stdio.h>
-#include <memory.h>
+
+#include <alpha.h>
+#include <mem.h>
+#include <util.h>
 static void reg_to_reg(alpha_ctx* ctx, byte operand)
 {
   printf("MOV R%d, R%d\n", operand&0xF, (operand&0xF0)>>4);
@@ -131,7 +133,10 @@ static void ret(alpha_ctx* ctx, byte operand)
 }
 static void alpha_putchar_imm(alpha_ctx* ctx, byte c)
 {
-  printf("PUTC $'%c'\n",c);
+  if(isprint(c))
+    printf("PUTC $'%c'\n",c);
+  else
+    printf("PUTC $0x%02X\n", c);
 }
 static void alpha_putchar_reg(alpha_ctx* ctx, byte operand)
 {
