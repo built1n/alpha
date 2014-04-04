@@ -1,5 +1,5 @@
 /*
- *  Alpha emulation library
+ *  Alpha Emulation Library
  *  Copyright (C) 2014 Franklin Wei
  *
  *  This program is free software: you can redistribute it and/or modify
@@ -13,7 +13,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
 #ifndef ALPHA_H_
@@ -22,7 +22,7 @@
 #include <stddef.h>
 #include <stdbool.h>
 #define ALPHA_IMPLEMENTED_REVISION 8
-#define ALPHA_VERSION "1.0"
+#define ALPHA_VERSION "1.0.1"
 typedef uint8_t byte;
 typedef uint32_t word;
 
