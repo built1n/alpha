@@ -22,6 +22,7 @@
 #include <stddef.h>
 #include <stdbool.h>
 #define ALPHA_IMPLEMENTED_REVISION 7
+#define ALPHA_VERSION "1.0"
 typedef uint8_t byte;
 typedef uint32_t word;
 

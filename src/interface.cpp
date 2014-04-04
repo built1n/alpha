@@ -51,6 +51,7 @@ void do_help(char* name)
   cerr << "  -H, --all-help\t\tPrint detailed help" << endl;
   cerr << "  -o <file>\t\t\tOutput compiled code to FILE instead of a.out" << endl;
   cerr << "  -q, --quiet\t\t\tDon't print help text in interactive mode" << endl;
+  cerr << "      --version\t\tDisplay version information" << endl;
   cerr << "      --stack-size=<size>\tSet stack size to SIZE instead of default " <<DEFAULT_STACK_SIZE<< endl;
 }
 void parse_args(int argc, char* argv[])
@@ -114,6 +115,15 @@ void parse_args(int argc, char* argv[])
 	      compile_output=argv[i+1];
 	      ++i;
 	    }
+	}
+      else if(arg=="--version")
+	{
+	  cout << "Alpha Emulation Library version " << ALPHA_VERSION << " revision " << ALPHA_IMPLEMENTED_REVISION << endl;
+	  cout << "Copyright (C) 2014 Franklin Wei" << endl;
+	  cout << "This program comes with ABSOLUTELY NO WARRANTY; for details see `LICENSE'." << endl;
+	  cout << "This is free software, and you are welcome to redistribute it" << endl;
+	  cout << "under certain conditions; see `LICENSE' for details." << endl;
+	  exit(1);
 	}
       else if(arg.length()>0 and arg[0]!='-')
 	{
