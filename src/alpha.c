@@ -104,10 +104,14 @@ void alpha_exec(alpha_ctx* ctx)
 }
 void alpha_disasm(alpha_ctx* ctx)
 {
-  if(!ctx->done && ctx->regs[PC]+1<ctx->memsize)
+  register byte opcode=readByte(ctx, ctx->regs[PC]);
+  if((!ctx->done && ctx->regs[PC]+1<ctx->memsize) || opcode==0x1A) // exception for one-byte opcodes, don't need it in exec because the stack should pad with zeroes
     {
       printf("0x%08X: ", ctx->regs[PC]);
-      disasm_opcode(ctx, readByte(ctx, ctx->regs[PC]), readByte(ctx, ctx->regs[PC]+1));
+      if(opcode!=0x1A) // ret is one byte
+	disasm_opcode(ctx, opcode, readByte(ctx, ctx->regs[PC]+1));
+      else
+	disasm_opcode(ctx, opcode, 0);
       ctx->regs[PC]+=2;
     }
   else
