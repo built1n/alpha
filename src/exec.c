@@ -157,7 +157,7 @@ static void pop(alpha_ctx* ctx, byte operand)
 }
 static void call_reg(alpha_ctx* ctx, byte operand)
 {
-  pushStack(ctx, ctx->regs[PC]);
+  pushStack(ctx, ctx->regs[PC]+2);
   ctx->regs[PC]=ctx->regs[operand&0xF]-2;
 }
 static void call_imm(alpha_ctx* ctx, byte operand)
