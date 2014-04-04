@@ -130,6 +130,7 @@ static void call_imm(alpha_ctx* ctx, byte operand)
 static void ret(alpha_ctx* ctx, byte operand)
 {
   printf("RET\n");
+  --ctx->regs[PC];
 }
 static void alpha_putchar_imm(alpha_ctx* ctx, byte c)
 {

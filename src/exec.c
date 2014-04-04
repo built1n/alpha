@@ -169,7 +169,7 @@ static void call_imm(alpha_ctx* ctx, byte operand)
 }
 static void ret(alpha_ctx* ctx, byte operand)
 {
-  ctx->regs[PC]=popStack(ctx);
+  ctx->regs[PC]=popStack(ctx)-1; // subtract the size of this instruction
 }
 static void alpha_putchar_imm(alpha_ctx* ctx, byte c)
 {
