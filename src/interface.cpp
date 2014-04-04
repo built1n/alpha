@@ -119,6 +119,7 @@ void parse_args(int argc, char* argv[])
       else if(arg=="--version")
 	{
 	  cout << "Alpha Emulation Library version " << ALPHA_VERSION << " revision " << ALPHA_IMPLEMENTED_REVISION << endl;
+	  cout << "Built " << __DATE__ << endl;
 	  cout << "Copyright (C) 2014 Franklin Wei" << endl;
 	  cout << "This program comes with ABSOLUTELY NO WARRANTY; for details see `LICENSE'." << endl;
 	  cout << "This is free software, and you are welcome to redistribute it" << endl;
