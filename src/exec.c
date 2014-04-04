@@ -69,9 +69,7 @@ static void djnz(alpha_ctx* ctx, byte operand)
   --ctx->regs[(operand&0xF0)>>4];
   if(ctx->regs[(operand&0xF0)>>4])
     {
-      int32_t jump=ctx->regs[operand&0xF];
-      ctx->regs[PC]+=jump;
-      ctx->regs[PC]-=2; // size of this instruction
+      ctx->regs[PC]=ctx->regs[operand&0xF];
     }
 }
 static void add_reg(alpha_ctx* ctx, byte operand)

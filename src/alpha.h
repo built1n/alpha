@@ -21,7 +21,7 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <stdbool.h>
-#define ALPHA_IMPLEMENTED_REVISION 6
+#define ALPHA_IMPLEMENTED_REVISION 7
 typedef uint8_t byte;
 typedef uint32_t word;
 

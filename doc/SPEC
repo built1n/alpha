@@ -1,4 +1,4 @@
-Revision 6
+Revision 7
 An Alpha virtual machine has 16 32-bit registers
 R0-R13: General-purpose
 R14: Stack pointer
@@ -15,7 +15,7 @@ Byte ordering is big-endian
 0x05 AB: If register A < R0, jump to register B
 0x06 AB: If register A > R0, jump to register B
 0x07 AB: If register A != R0, jump to register B
-0x08 AB: Decrement register A, if !=0, add signed register B to R15
+0x08 AB: Decrement register A, if !=0, jump to register B
 ===Arithmetic===
 --Register-Register--
 0x09 AB: Add register A to register B, store in B
