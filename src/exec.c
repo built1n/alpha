@@ -271,6 +271,14 @@ static void reqcheck(alpha_ctx* ctx, byte operand)
 {
   ctx->regs[operand&0xF]=ALPHA_IMPLEMENTED_REVISION;
 }
+static void nlz(alpha_ctx* ctx, byte operand) // essentially B=log2(A)
+{
+#ifdef __GNUC__
+  ctx->regs[operand&0xF]=__builtin_ffs(ctx->regs[(operand&0xF0)>>4]);
+#else
+#error "NLZ not implemented for non-GCC compilers yet!"
+#endif
+}
 void exec_opcode(alpha_ctx* ctx, byte opcode, byte operand)
 {
   static void (*exec_table[256])(alpha_ctx*, byte)={
@@ -323,7 +331,8 @@ void exec_opcode(alpha_ctx* ctx, byte opcode, byte operand)
     &memsize, // 0x28
     &zero, // 0x29
     &nop, // 0x2A
-    &reqcheck // 0x2B
+    &reqcheck, // 0x2B
+    &nlz // 0x2C
   };
   if(exec_table[opcode])
     exec_table[opcode](ctx, operand);
