@@ -130,14 +130,14 @@ static void call_imm(alpha_ctx* ctx, byte operand)
 static void ret(alpha_ctx* ctx, byte operand)
 {
   printf("RET\n");
-  --ctx->regs[PC];
+  //--(ctx->regs[PC]);
 }
 static void alpha_putchar_imm(alpha_ctx* ctx, byte c)
 {
   if(isprint(c))
-    printf("PUTC $'%c'\n",c);
+    printf("PUTC $'%c'\n",(char)c);
   else
-    printf("PUTC $0x%02X\n", c);
+    printf("PUTC $0x%02X\n", (char)c);
 }
 static void alpha_putchar_reg(alpha_ctx* ctx, byte operand)
 {
