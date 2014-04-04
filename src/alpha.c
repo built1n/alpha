@@ -22,13 +22,13 @@
 #include <alpha.h>
 void badRead(alpha_ctx* ctx)
 {
-  printf("Bad read at 0x%08X\n", ctx->regs[PC]);
+  printf("Bad read at 0x%08X.\n", ctx->regs[PC]);
   ctx->done=true;
   ctx->return_value=ALPHA_OUT_OF_BOUNDS;
 }
 void badWrite(alpha_ctx* ctx)
 {
-  printf("Bad write at 0x%08X\n", ctx->regs[PC]);
+  printf("Bad write at 0x%08X.\n", ctx->regs[PC]);
   ctx->done=true;
   ctx->return_value=ALPHA_OUT_OF_BOUNDS;
 }
