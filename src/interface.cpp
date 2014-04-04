@@ -195,7 +195,6 @@ void ctrlc(int signum)
   alpha_print_state(ctx);
   cout << "1. Continue" << endl;
   cout << "2. Abort" << endl;
-  cout << "3. Debug" << endl;
   bool good=false;
   signal(SIGINT, &exit);
   while(!good)
@@ -212,8 +211,6 @@ void ctrlc(int signum)
 	  signal(SIGINT, &ctrlc);
 	  run();
 	}
-      if(str[0]=='3')
-	exit(128);
     }
   exit(1);
 }
