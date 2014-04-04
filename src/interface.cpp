@@ -51,7 +51,7 @@ void do_help(char* name)
   cerr << "  -H, --all-help\t\tPrint detailed help" << endl;
   cerr << "  -o <file>\t\t\tOutput compiled code to FILE instead of a.out" << endl;
   cerr << "  -q, --quiet\t\t\tDon't print help text in interactive mode" << endl;
-  cerr << "      --version\t\tDisplay version information" << endl;
+  cerr << "      --version\t\t\tDisplay version information" << endl;
   cerr << "      --stack-size=<size>\tSet stack size to SIZE instead of default " <<DEFAULT_STACK_SIZE<< endl;
 }
 void parse_args(int argc, char* argv[])
