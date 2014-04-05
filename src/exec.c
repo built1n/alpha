@@ -274,6 +274,7 @@ static void reqcheck(alpha_ctx* ctx, byte operand)
 static void nl(alpha_ctx* ctx, byte junk)
 {
   putchar('\n');
+  --ctx->regs[PC];
 }
 void exec_opcode(alpha_ctx* ctx, byte opcode)
 {

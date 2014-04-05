@@ -232,6 +232,7 @@ static void reqcheck(alpha_ctx* ctx, byte operand)
 static void nl(alpha_ctx* ctx, byte junk)
 {
   printf("NL\n");
+  --ctx->regs[PC];
 }
 void disasm_opcode(alpha_ctx* ctx, byte opcode)
 {
