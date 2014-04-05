@@ -271,8 +271,11 @@ static void reqcheck(alpha_ctx* ctx, byte operand)
 {
   ctx->regs[operand&0xF]=ALPHA_IMPLEMENTED_REVISION;
 }
-
-void exec_opcode(alpha_ctx* ctx, byte opcode, byte operand)
+static void nl(alpha_ctx* ctx, byte junk)
+{
+  putchar('\n');
+}
+void exec_opcode(alpha_ctx* ctx, byte opcode)
 {
   static void (*exec_table[256])(alpha_ctx*, byte)={
     &reg_to_reg, // 0x00
@@ -325,7 +328,18 @@ void exec_opcode(alpha_ctx* ctx, byte opcode, byte operand)
     &zero, // 0x29
     &nop, // 0x2A
     &reqcheck, // 0x2B
+    &nl // 0x2C
   };
-  if(exec_table[opcode])
-    exec_table[opcode](ctx, operand);
+  if(opcode!=0x2C && opcode!=0x2A) // is this a >= two byte instruction
+    {
+      if(exec_table[opcode])
+	exec_table[opcode](ctx, readByte(ctx, ctx->regs[PC]+1));
+    }
+  else
+    {
+      if(exec_table[opcode])
+	{
+	  exec_table[opcode](ctx, 0);
+	}
+    }
 }

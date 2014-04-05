@@ -228,8 +228,12 @@ static void nop(alpha_ctx* ctx, byte operand)
 static void reqcheck(alpha_ctx* ctx, byte operand)
 {
   printf("GETREV R%d\n", operand&0xF);
-} 
-void disasm_opcode(alpha_ctx* ctx, byte opcode, byte operand)
+}
+static void nl(alpha_ctx* ctx, byte junk)
+{
+  printf("NL\n");
+}
+void disasm_opcode(alpha_ctx* ctx, byte opcode)
 {
   static void (*exec_table[256])(alpha_ctx*, byte)={
     &reg_to_reg, // 0x00
@@ -281,14 +285,24 @@ void disasm_opcode(alpha_ctx* ctx, byte opcode, byte operand)
     &memsize, // 0x28
     &zero, // 0x29
     &nop, // 0x2A
-    &reqcheck // 0x2B
+    &reqcheck, // 0x2B
+    &nl  // 0x2C
   };
-  if(exec_table[opcode])
-    exec_table[opcode](ctx, operand);
+  if(opcode!=0x2A && opcode!=0x2C)
+    {
+      register byte operand=readByte(ctx, ctx->regs[PC]+1);
+      if(exec_table[opcode])
+	exec_table[opcode](ctx, operand);
+      else
+	{
+	  printf("DATA $0x%02X\n", opcode);
+	  printf("0x%08X: ", ctx->regs[PC]+1);
+	  printf("DATA $0x%02X\n", operand);
+	}
+    }
   else
     {
-      printf("DATA $0x%02X\n", opcode);
-      printf("0x%08X: ", ctx->regs[PC]+1);
-      printf("DATA $0x%02X\n", operand);
+      if(exec_table[opcode])
+	exec_table[opcode](ctx, 0);
     }
 }
