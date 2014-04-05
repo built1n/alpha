@@ -106,6 +106,7 @@ void alpha_disasm(alpha_ctx* ctx)
 {
   if(!ctx->done && ctx->regs[PC]<ctx->memsize)
     {
+      printf("0x%08X: ", ctx->regs[PC]);
       disasm_opcode(ctx, readByte(ctx, ctx->regs[PC]));
       ctx->regs[PC]+=2; // most instructions are two bytes
     }
