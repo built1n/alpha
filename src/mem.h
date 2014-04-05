@@ -21,55 +21,54 @@
 
 #include <alpha.h>
 #include <util.h>
-static inline word getArg(alpha_ctx* ctx)
-{
-  if(ctx->regs[PC]+2<(ctx->memsize)-4)
-    {
-      register word ret;
-      register word pc = ctx->regs[PC]+2;
-      ret=(ctx->memory[pc]<<24);
-      ret|=(ctx->memory[pc+1]<<16);
-      ret|=(ctx->memory[pc+2]<<8);
-      ret|=(ctx->memory[pc+3]);
-      ctx->regs[PC]+=4;
-      return ret;
-    }
-  else
-    badRead(ctx);
-  return 0xDEADBEEF;
-}
 static inline void writeWord(alpha_ctx* ctx, word addr, word value)
 {
-  if(addr<ctx->memsize-3)
+  if(addr<ctx->memsize-(ALPHA_WORDSIZE-1))
     {
-      ctx->memory[addr]=((value&0xFF000000) >> 24);
-      ctx->memory[addr+1]=((value&0x00FF0000) >> 16);
-      ctx->memory[addr+2]=((value&0x0000FF00) >> 8);
-      ctx->memory[addr+3]=((value&0xFF));
+      word mask=((word)0xFF<<((ALPHA_WORDSIZE-1)*8));
+      word sizeMinusOne=(ALPHA_WORDSIZE-1)*8;
+      for(int i=0;i<ALPHA_WORDSIZE;++i)
+	{
+	  ctx->memory[addr+i]|=((value&mask) >> ( sizeMinusOne - i*8));
+	  mask>>=8;
+	}
     }
   else
     badWrite(ctx);
 }
 static inline word readWord(alpha_ctx* ctx, word addr)
 {
-  if(addr<ctx->memsize-3)
+  if(addr<ctx->memsize-(ALPHA_WORDSIZE-1))
     {
-      word ret=ctx->memory[addr+3];
-      ret|=((ctx->memory[addr+2])<<8);
-      ret|=((ctx->memory[addr+1])<<16);
-      ret|=((ctx->memory[addr])<<24);
+      register word ret;
+      ret=((word)ctx->memory[addr]<<(ALPHA_WORDSIZE-1)*8);
+      for(int i=1;i<ALPHA_WORDSIZE;++i)
+	ret|=((word)ctx->memory[addr+i] << (((ALPHA_WORDSIZE-1)*8)-8*i));
       return ret;
     }
   else
     badRead(ctx);
   return 0xDEADBEEF;
 }
+static inline word getArg(alpha_ctx* ctx)
+{
+  if(ctx->regs[PC]+2<(ctx->memsize)-ALPHA_WORDSIZE)
+    {
+      register word ret=readWord(ctx, ctx->regs[PC]+2);
+      ctx->regs[PC]+=ALPHA_WORDSIZE;
+      return ret;
+    }
+  else
+    badRead(ctx);
+  return 0xDEADBEEF;
+}
+
 static inline word popStack(alpha_ctx* ctx)
 {
-  if(ctx->regs[SP]>=4)
+  if(ctx->regs[SP]>=ALPHA_WORDSIZE)
     {
-      register word ret=readWord(ctx, ctx->regs[SP]-4);
-      ctx->regs[SP]-=4;
+      register word ret=readWord(ctx, ctx->regs[SP]-ALPHA_WORDSIZE);
+      ctx->regs[SP]-=ALPHA_WORDSIZE;
       return ret;
     }
   else
@@ -78,10 +77,10 @@ static inline word popStack(alpha_ctx* ctx)
 }
 static inline void pushStack(alpha_ctx* ctx, word value)
 {
-  if(ctx->regs[SP]<ctx->memsize-3)
+  if(ctx->regs[SP]<ctx->memsize-(ALPHA_WORDSIZE-1))
     {
       writeWord(ctx, ctx->regs[SP], value);
-      ctx->regs[SP]+=4;
+      ctx->regs[SP]+=ALPHA_WORDSIZE;
     }
   else
     stackOverflow(ctx);

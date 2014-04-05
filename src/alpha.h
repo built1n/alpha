@@ -22,16 +22,17 @@
 #include <stddef.h>
 #include <stdbool.h>
 #define ALPHA_IMPLEMENTED_REVISION 8
-#define ALPHA_VERSION "1.0.1-1"
+#define ALPHA_VERSION "1.1.0a"
+#define ALPHA_WORDSIZE sizeof(word)
 typedef uint8_t byte;
-typedef uint32_t word;
+typedef uint64_t word;
 
 typedef struct alpha_ctx {
   byte* memory;
   word memsize;
   word regs[16];
   bool done;
-  int return_value;
+  word return_value;
 } alpha_ctx;
 
 #ifdef __cplusplus

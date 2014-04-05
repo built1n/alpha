@@ -35,7 +35,7 @@ static void reg_to_mem(alpha_ctx* ctx, byte operand)
 }
 static void load_imm(alpha_ctx* ctx, byte operand)
 {
-  printf("MOV R%d, $0x%08X\n", operand&0xF, getArg(ctx));
+  printf("MOV R%d, $0x%016llX\n", operand&0xF, getArg(ctx));
 }
 static void jump_equ(alpha_ctx* ctx, byte operand)
 {
@@ -79,23 +79,23 @@ static void mod_reg(alpha_ctx* ctx, byte operand)
 }
 static void add_imm(alpha_ctx* ctx, byte operand)
 {
-  printf("ADD R%d, $0x%08X\n", operand&0xF, getArg(ctx));
+  printf("ADD R%d, $0x%016llX\n", operand&0xF, getArg(ctx));
 }
 static void sub_imm(alpha_ctx* ctx, byte operand)
 {
-  printf("SUB R%d, $0x%08X\n", operand&0xF, getArg(ctx));
+  printf("SUB R%d, $0x%016llX\n", operand&0xF, getArg(ctx));
 }
 static void mul_imm(alpha_ctx* ctx, byte operand)
 {
-  printf("MUL R%d, $0x%08X\n", operand&0xF, getArg(ctx));
+  printf("MUL R%d, $0x%016llX\n", operand&0xF, getArg(ctx));
 }
 static void div_imm(alpha_ctx* ctx, byte operand)
 {
-  printf("DIV R%d, $0x%08X\n", operand&0xF, getArg(ctx));
+  printf("DIV R%d, $0x%016llX\n", operand&0xF, getArg(ctx));
 }
 static void mod_imm(alpha_ctx* ctx, byte operand)
 {
-  printf("MOD R%d, $0x%08X\n", operand&0xF, getArg(ctx));
+  printf("MOD R%d, $0x%016llX\n", operand&0xF, getArg(ctx));
 }
 static void incr(alpha_ctx* ctx, byte operand)
 {
@@ -112,7 +112,7 @@ static void push_reg(alpha_ctx* ctx, byte operand)
 static void push_imm(alpha_ctx* ctx, byte operand)
 {
   ctx->regs[PC]-=1; // BUG?
-  printf("PUSH $ 0x%08X\n", getArg(ctx));
+  printf("PUSH $ 0x%016llX\n", getArg(ctx));
 }
 static void pop(alpha_ctx* ctx, byte operand)
 {
@@ -125,7 +125,7 @@ static void call_reg(alpha_ctx* ctx, byte operand)
 static void call_imm(alpha_ctx* ctx, byte operand)
 {
   --ctx->regs[PC];
-  printf("CALL $0x%08X\n", getArg(ctx));
+  printf("CALL $0x%016llX\n", getArg(ctx));
 }
 static void ret(alpha_ctx* ctx, byte operand)
 {
@@ -288,7 +288,7 @@ void disasm_opcode(alpha_ctx* ctx, byte opcode, byte operand)
   else
     {
       printf("DATA $0x%02X\n", opcode);
-      printf("0x%08X: ", ctx->regs[PC]+1);
+      printf("0x%016llX: ", ctx->regs[PC]+1);
       printf("DATA $0x%02X\n", operand);
     }
 }

@@ -191,22 +191,22 @@ static void print_number(alpha_ctx* ctx, byte operand)
   switch((operand&0xF0)>>4)
     {
     case 0: // decimal
-      printf("%u", ctx->regs[reg_num]);
+      printf("%llu", ctx->regs[reg_num]);
       break;
     case 1:
-      printf("%X", ctx->regs[reg_num]);
+      printf("%llX", ctx->regs[reg_num]);
       break;
     case 2:
-      printf("%08X", ctx->regs[reg_num]);
+      printf("%016llX", ctx->regs[reg_num]);
       break;
     case 3:
-      printf("%x", ctx->regs[reg_num]);
+      printf("%llx", ctx->regs[reg_num]);
       break;
     case 4:
-      printf("%08x", ctx->regs[reg_num]);
+      printf("%016llx", ctx->regs[reg_num]);
       break;
     case 5:
-      printf("%d", (int32_t)ctx->regs[reg_num]);
+      printf("%lld", (int64_t)ctx->regs[reg_num]);
       break;
     default:
       badInstr(ctx);
@@ -245,13 +245,13 @@ static void not(alpha_ctx* ctx, byte operand)
 }
 static void rotl(alpha_ctx* ctx, byte operand)
 {
-  word bit=(ctx->regs[operand&0xF]&0x80000000)>>31;
+  word bit=(ctx->regs[operand&0xF]&0x8000000000000000)>>63;
   ctx->regs[operand&0xF]<<=1;
   ctx->regs[operand&0xF]|=bit;
 }
 static void rotr(alpha_ctx* ctx, byte operand)
 {
-  word bit=(ctx->regs[operand&0xF]&0x1)<<31;
+  word bit=(ctx->regs[operand&0xF]&0x1)<<63;
   ctx->regs[operand&0xF]>>=1;
   ctx->regs[operand&0xF]|=bit;
 }

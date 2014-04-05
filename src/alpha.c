@@ -22,25 +22,25 @@
 #include <alpha.h>
 void badRead(alpha_ctx* ctx)
 {
-  printf("Bad read at 0x%08X.\n", ctx->regs[PC]);
+  printf("Bad read at 0x%016llX.\n", ctx->regs[PC]);
   ctx->done=true;
   ctx->return_value=ALPHA_OUT_OF_BOUNDS;
 }
 void badWrite(alpha_ctx* ctx)
 {
-  printf("Bad write at 0x%08X.\n", ctx->regs[PC]);
+  printf("Bad write at 0x%016llX.\n", ctx->regs[PC]);
   ctx->done=true;
   ctx->return_value=ALPHA_OUT_OF_BOUNDS;
 }
 void badInstr(alpha_ctx* ctx)
 {
-  printf("Invalid instruction at 0x%08X.\n", ctx->regs[PC]);
+  printf("Invalid instruction at 0x%016llX.\n", ctx->regs[PC]);
   ctx->done=true;
   ctx->return_value=ALPHA_BAD_INSTR;
 }
 void divideByZero(alpha_ctx* ctx)
 {
-  printf("Divide by zero at 0x%08X.\n", ctx->regs[PC]);
+  printf("Divide by zero at 0x%016llX.\n", ctx->regs[PC]);
   ctx->done=true;
   ctx->return_value=ALPHA_DIVIDE_BY_ZERO;
 }
@@ -54,13 +54,13 @@ byte readByte(alpha_ctx* ctx, word addr)
 }
 void stackOverflow(alpha_ctx* ctx)
 {
-  printf("Stack overflow at 0x%08X.\n", ctx->regs[PC]);
+  printf("Stack overflow at 0x%016llX.\n", ctx->regs[PC]);
   ctx->done=true;
   ctx->return_value=ALPHA_STACK_OVERFLOW;
 }
 void stackUnderflow(alpha_ctx* ctx)
 {
-  printf("Stack underflow at 0x%08X.\n", ctx->regs[PC]);
+  printf("Stack underflow at 0x%016llX.\n", ctx->regs[PC]);
   ctx->done=true;
   ctx->return_value=ALPHA_STACK_UNDERFLOW;
 }
@@ -84,9 +84,9 @@ void alpha_print_state(alpha_ctx* ctx)
   printf("====Status====\n");
   for(int i=0;i<16;++i)
     {
-      printf("R%d: 0x%08X\n", i, ctx->regs[i]);
+      printf("R%d: 0x%016llX\n", i, ctx->regs[i]);
     }
-  printf("Available memory: %u bytes\n", ctx->memsize);
+  printf("Available memory: %llu bytes\n", ctx->memsize);
   printf("Disassembly of instruction: ");
   word oldpc=ctx->regs[PC];
   alpha_disasm(ctx);
@@ -107,7 +107,7 @@ void alpha_disasm(alpha_ctx* ctx)
   register byte opcode=readByte(ctx, ctx->regs[PC]);
   if((!ctx->done && ctx->regs[PC]+1<ctx->memsize) || opcode==0x1A) // exception for one-byte opcodes, don't need it in exec because the stack should pad with zeroes
     {
-      printf("0x%08X: ", ctx->regs[PC]);
+      printf("0x%016llX: ", ctx->regs[PC]);
       if(opcode!=0x1A) // ret is one byte
 	disasm_opcode(ctx, opcode, readByte(ctx, ctx->regs[PC]+1));
       else
