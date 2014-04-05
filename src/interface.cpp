@@ -1,3 +1,4 @@
+
 /*
  *  Alpha emulation library
  *  Copyright (C) 2014 Franklin Wei
@@ -206,13 +207,12 @@ void ctrlc(int signum)
   alpha_print_state(ctx);
   cout << "1. Continue" << endl;
   cout << "2. Abort" << endl;
-  bool good=false;
-  signal(SIGINT, &exit);
-  while(!good)
+  signal(SIGINT, SIG_DFL);
+  while(true)
     {
       string str;
       cout << "? " << flush;
-      cin >> str;
+      getline(cin, str);
       if(str.length()==0)
 	exit(1);
       if(str[0]=='2' or str=="exit" or str=="quit")
