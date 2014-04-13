@@ -97,7 +97,7 @@ void alpha_exec(alpha_ctx* ctx)
   if(!ctx->done && ctx->regs[PC]<ctx->memsize)
     {
       exec_opcode(ctx, readByte(ctx, ctx->regs[PC]));
-      ctx->regs[PC]+=2; // most instructions are two bytes
+      ++ctx->regs[PC];
     }
   else
     ctx->done=true;
@@ -108,7 +108,7 @@ void alpha_disasm(alpha_ctx* ctx)
     {
       printf("0x%08X: ", ctx->regs[PC]);
       disasm_opcode(ctx, readByte(ctx, ctx->regs[PC]));
-      ctx->regs[PC]+=2; // most instructions are two bytes
+      ++ctx->regs[PC]; // all instructions are at least one byte
     }
   else
     ctx->done=true;

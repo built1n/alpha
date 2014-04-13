@@ -25,5 +25,4 @@ void divideByZero(alpha_ctx*);
 byte readByte(alpha_ctx*, word);
 void stackOverflow(alpha_ctx*);
 void stackUnderflow(alpha_ctx*);
-#define PC 15
-#define SP 14
+#define PC 31
