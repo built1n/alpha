@@ -1,69 +1,69 @@
-Revision 8
-An Alpha virtual machine has 16 32-bit registers
-R0-R13: General-purpose
-R14: Stack pointer
-R15: Program counter
-Byte ordering is big-endian
-=====Instruction set=====
-===Memory===
-0x00 AB: Copy register A to register B
-0x01 AB: Copy word pointed to by A to register B
-0x02 AB: Copy register A to location pointed to by register B
-0x03 0B <WORD>: Copy WORD to register B
-===Flow control===
-0x04 AB: If register A == R0, jump to register B
-0x05 AB: If register A < R0, jump to register B
-0x06 AB: If register A > R0, jump to register B
-0x07 AB: If register A != R0, jump to register B
-0x08 AB: Decrement register A, if !=0, jump to register B
-===Arithmetic===
---Register-Register--
-0x09 AB: Add register A to register B, store in B
-0x0A AB: Subtract register A from register B, store in B
-0x0B AB: Multiply register A by register B, store in B
-0x0C AB: Divide register B by register A, store in B
-0x0D AB: Modulo register B by register A, store in B
---Register-Immediate--
-0x0E 0A <WORD>: Add WORD to register A
-0x0F 0A <WORD>: Subtract WORD from register A
-0x10 0A <WORD>: Multiply WORD by register A
-0x11 0A <WORD>: Divide register A by WORD
-0x12 1A <WORD>: Modulo register A by WORD
-0x13 0A: Increment register A
-0x14 0A: Decrement register A
-===Stack===
-0x15 0A: Push register A
-0x16 <WORD>: Push WORD
-0x17 0A: Pop into register A
-0x18 0A: Call register A
-0x19 <WORD>: Call WORD
-0x1A   : Return
-===I/O===
-0x1B <BYTE>: Print BYTE as ASCII
-0x1C 0A: Print least significant byte of register A as ASCII
-0x1D 0A: Print null-terminated string at register A, length of string will be added to register A
-0x1E 0A: Print register A as an unsigned integer in decimal
-0x1E 1A: Print register A in uppercase hexadecimal, no padding
-0x1E 2A: Print register A in uppercase padded hexadecimal
-0x1E 3A: Print register A in lowercase hexadecimal, no padding
-0x1E 4A: Print register A in lowercase padded hexadecimal
-0x1E 5A: Print register A as a signed integer in decimal
-0x1F 0A: Return register A to the host OS
-===Bitwise operations===
-0x20 AB: OR register A by register B, store in A
-0x21 AB: AND register A by register B, store in A
-0x22 AB: LSH register A by register B, store in A
-0x23 AB: RSH register A by register B, store in A
-0x24 AB: XOR register A by register B, store in A
-0x25 0A: NOT register A
-0x26 0A: ROTL register A
-0x27 0A: ROTR register A
-===Miscellaneous===
-0x28 0A: Store the amount of availible memory in register A
-0x29 0A: Zero register A
-0x2A: 	 Do nothing
-0x2B 0A: Store the implemented revision into register A
-0x2C:    Print a platform-specific newline sequence
-====Assembler Syntax====
-Instructions with two operands are INSTR DEST, SOURCE
-Constants are prefixed with a `$'
+Revision 9
+An Alpha virtual machine has 32 32-bit registers
+A word is 4 bytes
+G0 always contains the value 0, any attempts to write to it will be ignored.
+G31 is the program counter.
+
+Arithmetic instructions needing 3 register arguments are in this format:
+3-bit opcode
+6-bit extended opcode
+5-bit destination
+5-bit operand 1
+5-bit operand 2
+
+Conditional jumps needing three register arguments are in this format:
+3-bit opcode
+5-bit condition
+1-bit true/false bit
+5-bit destination
+5-bit left operand
+5-bit right operand
+
+Load/Store instructions are in this format:
+3-bit opcode
+3-bit extended opcode
+5-bit destination register
+5-bit source register
+
+Instructions needing one register argument are in this format:
+3-bit opcode
+5-bit operand
+
+
+=====Instruction Set=====
+====Load/Store====
+000 001 DDDDD SSSSS: RS->RD
+000 010 DDDDD SSSSS: (RS)->RD
+000 011 DDDDD SSSSS: RS->(RD)
+001 DDDDD <WORD>: WORD->RD
+====Flow Control====
+010 00000 0 DDDDD LLLLL RRRRR: Jump if equal
+010 00000 1 DDDDD LLLLL RRRRR: Jump if not equal
+010 00001 0 DDDDD LLLLL RRRRR: Jump if less
+010 00001 1 DDDDD LLLLL RRRRR: Jump if more
+010 00010 0 DDDDD LLLLL RRRRR: Jump if less than or equal
+010 00010 1 DDDDD LLLLL RRRRR: Jump if more than or equal
+====Arithmetic and bitwise ops====
+011 000000 DDDDD LLLLL RRRRR: RL+RR->RD
+011 000001 DDDDD LLLLL RRRRR: RL-RR->RD
+011 000010 DDDDD LLLLL RRRRR: RL*RR->RD
+011 000011 DDDDD LLLLL RRRRR: RL/RR->RD
+011 000100 DDDDD LLLLL RRRRR: RL%RR->RD
+011 000101 DDDDD LLLLL RRRRR: RL AND RR->RD
+011 000110 DDDDD LLLLL RRRRR: RL OR RR->RD
+011 000111 DDDDD LLLLL RRRRR: RL XOR RR->RD
+011 001000 DDDDD LLLLL RRRRR: RL LSH RR->RD
+011 001001 DDDDD LLLLL RRRRR: RL RSH RR->RD
+100 DDDDD: INC RD
+101 DDDDD: DEC RD
+110 000 DDDDD SSSSS: NOT RD -> RD
+110 001 DDDDD SSSSS: RS LROT -> RD
+110 010 DDDDD SSSSS: RS RROT -> RD
+====I/O====
+111 000 000 NN SSSSS: Print Nth byte of RS as ASCII
+111 001 SSSSS: Print RS as an unsigned decimal number
+111 010 SSSSS: Print RS as an uppercase hexadecimal number
+111 011 SSSSS: Print RS as an lowercase hexadecimal number
+111 100 DDDDD: Read a character from the keyboard into RD
+111 101 DDDDD: Read an integer from the keyboard into RD
+111 110 DDDDD: Print
