@@ -1,6 +1,6 @@
 Revision 9
 An Alpha virtual machine has 32 32-bit registers
-A word is 4 bytes
+A word is 4 bytes in big-endian ordering
 G0 always contains the value 0, any attempts to write to it will be ignored.
 G31 is the program counter.
 
@@ -32,9 +32,9 @@ Instructions needing one register argument are in this format:
 
 =====Instruction Set=====
 ====Load/Store====
-000 001 DDDDD SSSSS: RS->RD
-000 010 DDDDD SSSSS: (RS)->RD
-000 011 DDDDD SSSSS: RS->(RD)
+000 000 DD DDD SSSSS: RS->RD
+000 001 DDDDD SSSSS: (RS)->RD
+000 010 DDDDD SSSSS: RS->(RD)
 001 DDDDD <WORD>: WORD->RD
 ====Flow Control====
 010 00000 0 DDDDD LLLLL RRRRR: Jump if equal
